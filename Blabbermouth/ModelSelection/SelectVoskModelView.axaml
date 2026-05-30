@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:Blabbermouth.Views"
+             x:Class="Blabbermouth.ModelSelection.SelectVoskModelView">
+    <Grid RowDefinitions="* 1.6* *" ColumnDefinitions="* 2* *">
+        <Grid Grid.Row="1" Grid.Column="1" Background="Black" RowDefinitions="* 50">
+            <views:ModelSelectorView Name="Selector" />
+            <Button Name="ContinueButton" Grid.Row="1" Content="Continue" FontSize="18" Click="ContinueButtonClicked" FontWeight="Bold" HorizontalAlignment="Stretch" Margin="5 0 5 5 "/>
+        </Grid>
+    </Grid>
+</UserControl>

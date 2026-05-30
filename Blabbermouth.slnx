@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Blabbermouth/Blabbermouth.csproj" />
+  <Project Path="Vosk.Native.Fix/Vosk.Native.Fix.csproj" />
+</Solution>

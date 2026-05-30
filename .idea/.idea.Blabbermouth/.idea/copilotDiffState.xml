@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="/Program (snapshot).cs">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="/Program (snapshot).cs" />
+              <option name="originalContent" value="using System;&#10;using Avalonia;&#10;&#10;namespace Blabbermouth;&#10;&#10;class Program&#10;{&#10;    // Initialization code. Don't use any Avalonia, third-party APIs or any&#10;    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized&#10;    // yet and stuff might break.&#10;    [STAThread]&#10;    public static void Main(string[] args) =&gt; BuildAvaloniaApp()&#10;        .StartWithClassicDesktopLifetime(args);&#10;&#10;    // Avalonia configuration, don't remove; also used by visual designer.&#10;    public static AppBuilder BuildAvaloniaApp()&#10;        =&gt; AppBuilder.Configure&lt;App&gt;()&#10;            .UsePlatformDetect()&#10;            .WithInterFont()&#10;            .LogToTrace();&#10;}" />
+              <option name="updatedContent" value="using System;&#10;using Avalonia;&#10;&#10;namespace Blabbermouth;&#10;&#10;class Program&#10;{&#10;    // Initialization code. Don't use any Avalonia, third-party APIs or any&#10;    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized&#10;    // yet and stuff might break.&#10;    [STAThread]&#10;    public static void Main(string[] args)&#10;    {&#10;        TestSoundFlow.Test();&#10;        BuildAvaloniaApp()&#10;            .StartWithClassicDesktopLifetime(args);&#10;    }&#10;&#10;    // Avalonia configuration, don't remove; also used by visual designer.&#10;    public static AppBuilder BuildAvaloniaApp()&#10;        =&gt; AppBuilder.Configure&lt;App&gt;()&#10;            .UsePlatformDetect()&#10;            .WithInterFont()&#10;            .LogToTrace();&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

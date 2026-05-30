@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageId>Vosk.Native.Fix</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>Andy</Authors>
+        <Description>Fixes Vosk native publishing for cross-RID builds</Description>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Vosk" Version="0.3.38" />
+    </ItemGroup>
+    
+    <Target Name="DisableVoskTargets"
+            BeforeTargets="ResolvePackageAssets">
+        <ItemGroup>
+            <None Remove="@(NativeLibs)" />
+        </ItemGroup>
+    </Target>
+</Project>

@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:blabbermouth="clr-namespace:Blabbermouth"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="250"
+             x:Class="Blabbermouth.Views.PhraseListView">
+    <Grid RowDefinitions="Auto *">
+        <DockPanel Grid.Row="0">
+            <TextBlock DockPanel.Dock="Left" Text="Activation Phrases" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+            <Button DockPanel.Dock="Right" Content="+" Click="AddClicked" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right" Width="40"/>
+        </DockPanel>
+        <ListBox Name="PhrasesBox" Grid.Row="1">
+            <ListBox.Resources>
+                <blabbermouth:EffectEmojiConverter x:Key="EffectEmojiConverter"/>
+                <blabbermouth:ActivationEmojiConverter x:Key="ActivationEmojiConverter"/>
+            </ListBox.Resources>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="blabbermouth:PhraseEntry">
+                    <Grid ColumnDefinitions="Auto * Auto" Height="30">
+                        <StackPanel>
+                            <Button Content="↑" FontSize="10" Padding="0" Click="UpClicked"/>
+                            <Button Content="↓" FontSize="10" Padding="0" Click="DownClicked"/>
+                        </StackPanel>
+                        <TextBox Grid.Column="1" Padding="4 0 0 0" Name="PhraseTextBox" VerticalContentAlignment="Center" Text="{Binding Phrase}" HorizontalAlignment="Stretch" KeyDown="PhraseKeyPressed" LostFocus="PhraseLostFocus"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button IsVisible="{Binding IsWindows}" Content="{Binding Activation, Converter={StaticResource ActivationEmojiConverter}}" ToolTip.Tip="{Binding Activation}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="5 0 0 0" Click="ActivationButtonClicked"/>
+                            <Button Content="{Binding Effect, Converter={StaticResource EffectEmojiConverter}}" ToolTip.Tip="{Binding Effect}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="5 0 0 0" Click="EffectButtonClicked"/>
+                            <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="1" Maximum="100" Width="55" Value="{Binding Intensity}" ValueChanged="LengthChanged"/>
+                            <TextBlock Text="⏱️" FontSize="18" VerticalAlignment="Center"/>
+                            <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="0.3" Maximum="15" Width="58" Value="{Binding Seconds}"/>
+                            <Button Content="❌" Margin="5 0 0 0" Click="RemovePhraseClicked"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>
+

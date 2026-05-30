@@ -1,0 +1,106 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <TrimmerSingleWarn>false</TrimmerSingleWarn>
+        <DebugType>embedded</DebugType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.16" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.16" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.16" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.16" />
+        <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.16" />
+        <PackageReference Include="DialogHost.Avalonia" Version="0.11.0" />
+        <PackageReference Include="HotAvalonia" Version="3.1.0" />
+        <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.50.0" />
+        <PackageReference Include="Microsoft.CognitiveServices.Speech.Extension.Embedded.SR" Version="1.50.0" />
+        <PackageReference Include="Microsoft.CognitiveServices.Speech.Extension.ONNX.Runtime" Version="1.50.0" />
+        <PackageReference Include="Microsoft.CognitiveServices.Speech.Extension.Telemetry" Version="1.50.0" />
+        <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.2" />
+        <PackageReference Include="SoundFlow" Version="1.4.1" />
+        <PackageReference Include="System.IO.Ports" Version="11.0.0-preview.4.26230.115" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\AudioConfigView.axaml.cs">
+        <DependentUpon>AudioConfigView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\ModelSelectorView.axaml.cs">
+        <DependentUpon>ModelSelectorView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MonitorView.axaml.cs">
+        <DependentUpon>MonitorView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\PhraseListView.axaml.cs">
+        <DependentUpon>PhraseListView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\ShockerConfigView.axaml.cs">
+        <DependentUpon>ShockerConfigView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="ModelSelection\SelectVoskModelView.axaml.cs">
+        <DependentUpon>SelectVoskModelView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\AboutView.axaml.cs">
+        <DependentUpon>AboutView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Vosk.Native.Fix\Vosk.Native.Fix.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+        <ResolvedFileToPublish Include="$(NuGetPackageRoot)\vosk\0.3.38\build\lib\linux-x64\libvosk.so">
+            <RelativePath>libvosk.so</RelativePath>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </ResolvedFileToPublish>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64'">
+        <ResolvedFileToPublish Include="$(NuGetPackageRoot)\vosk\0.3.38\build\lib\osx-universal\libvosk.dylib">
+            <RelativePath>libvosk.dylib</RelativePath>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </ResolvedFileToPublish>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">
+        <ResolvedFileToPublish Include="$(NuGetPackageRoot)\vosk\0.3.38\build\lib\osx-universal\libvosk.dylib">
+            <RelativePath>libvosk.dylib</RelativePath>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </ResolvedFileToPublish>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+        <ResolvedFileToPublish Include="$(NuGetPackageRoot)\vosk\0.3.38\build\lib\win-x64\libvosk.dll">
+            <RelativePath>libvosk.dll</RelativePath>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </ResolvedFileToPublish>
+
+        <ResolvedFileToPublish Include="$(NuGetPackageRoot)\vosk\0.3.38\build\lib\win-x64\libstdc++-6.dll">
+            <RelativePath>libstdc++-6.dll</RelativePath>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </ResolvedFileToPublish>
+
+        <ResolvedFileToPublish Include="$(NuGetPackageRoot)\vosk\0.3.38\build\lib\win-x64\libgcc_s_seh-1.dll">
+            <RelativePath>libgcc_s_seh-1.dll</RelativePath>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </ResolvedFileToPublish>
+
+        <ResolvedFileToPublish Include="$(NuGetPackageRoot)\vosk\0.3.38\build\lib\win-x64\libwinpthread-1.dll">
+            <RelativePath>libwinpthread-1.dll</RelativePath>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </ResolvedFileToPublish>
+    </ItemGroup>
+</Project>

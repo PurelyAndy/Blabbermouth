@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="AboutView.axaml" value="Blabbermouth.csproj" />
+        <entry key="App.axaml" value="Blabbermouth.csproj" />
+        <entry key="AudioConfigView.axaml" value="Blabbermouth.csproj" />
+        <entry key="Blabbermouth/MainWindow.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/ModelSelection/SelectEmbeddedModelView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/ModelSelection/SelectVoskModelView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/Views/PhraseListView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/Views/ShockerConfigView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="DialogBox.axaml" value="Blabbermouth.csproj" />
+        <entry key="MainWindow.axaml" value="Blabbermouth.csproj" />
+        <entry key="ModelSelection/SelectEmbeddedModelView.axaml" value="Blabbermouth.csproj" />
+        <entry key="ModelSelection/SelectSherpaOnnxModelView.axaml" value="Blabbermouth.csproj" />
+        <entry key="ModelSelection/SelectVoskModelView.axaml" value="Blabbermouth.csproj" />
+        <entry key="ModelSelectorView.axaml" value="Blabbermouth.csproj" />
+        <entry key="MonitorView.axaml" value="Blabbermouth.csproj" />
+        <entry key="PhraseListView.axaml" value="Blabbermouth.csproj" />
+        <entry key="SelectEmbeddedModelView.axaml" value="Blabbermouth.csproj" />
+        <entry key="SelectVoskModelView.axaml" value="Blabbermouth.csproj" />
+        <entry key="ShockerConfigView.axaml" value="Blabbermouth.csproj" />
+        <entry key="Views/AudioConfigView.axaml" value="Blabbermouth.csproj" />
+        <entry key="Views/ModelSelectorView.axaml" value="Blabbermouth.csproj" />
+        <entry key="Views/PhraseListView.axaml" value="Blabbermouth.csproj" />
+        <entry key="Views/ShockerConfigView.axaml" value="Blabbermouth.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

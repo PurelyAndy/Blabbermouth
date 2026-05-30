@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:blabbermouth="clr-namespace:Blabbermouth.Views"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="320"
+             MaxWidth="400" MaxHeight="320"
+             Background="Black"
+             x:Class="Blabbermouth.Views.AboutView"
+             x:DataType="blabbermouth:AboutView"
+             x:Name="Root">
+    <Grid RowDefinitions="* *" Margin="10">
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Blabbermouth" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 0 0 5"/>
+            <TextBlock Text="Version 3.2.1" FontSize="14" HorizontalAlignment="Center" Margin="0 0 0 10"/>
+            <TextBlock Text="Blabbermouth is an open-source speech recognition application that sends commands to a PiShock device based on recognized speech."
+                       FontSize="12" HorizontalAlignment="Center" Margin="10 0 10 10" TextWrapping="Wrap"/>
+        </StackPanel>
+        <Button Grid.Row="0" Background="Transparent" BorderThickness="0" Content="×" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -15 -10 0" Padding="5 0 5 0" Command="{Binding #Root.Host.CloseDialogCommand}"/>
+        <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+            <HyperlinkButton Content="GitHub Repository" NavigateUri="https://github.com/PurelyAndy/Blabbermouth" HorizontalAlignment="Center" Padding="0" Margin="0 0 0 5"/>
+            <HyperlinkButton Content="Report a Bug" NavigateUri="https://github.com/PurelyAndy/Blabbermouth/issues/new" HorizontalAlignment="Center" Padding="0" Margin="0 0 0 5"/>
+            <HyperlinkButton Content="License (MIT)" NavigateUri="https://raw.githubusercontent.com/PurelyAndy/Blabbermouth/refs/heads/main/LICENSE" HorizontalAlignment="Center" Padding="0" Margin="0 0 0 5"/>
+            <TextBlock Text="Made with ❤️ by Andy" FontSize="12" HorizontalAlignment="Center" Margin="0 20 0 10"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
