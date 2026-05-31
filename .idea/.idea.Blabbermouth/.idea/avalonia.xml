@@ -9,8 +9,12 @@
         <entry key="Blabbermouth/MainWindow.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/ModelSelection/SelectEmbeddedModelView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/ModelSelection/SelectVoskModelView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/Views/AboutView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/Views/AudioConfigView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/Views/PhraseEntryTemplate.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/Views/PhraseListView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/Views/ShockerConfigView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/Views/TemplatedControl1.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="DialogBox.axaml" value="Blabbermouth.csproj" />
         <entry key="MainWindow.axaml" value="Blabbermouth.csproj" />
         <entry key="ModelSelection/SelectEmbeddedModelView.axaml" value="Blabbermouth.csproj" />

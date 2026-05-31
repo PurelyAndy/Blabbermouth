@@ -120,7 +120,7 @@ public static class SttManager
                 index = output.LastIndexOf($" {foundPhrase.Phrase}", StringComparison.CurrentCultureIgnoreCase);
             }
             
-            addedSegments.Add(new(output[..(index+1)], defaultBrush, Brushes.Transparent));
+            addedSegments.Add(new(output[..(index + 1)], defaultBrush, Brushes.Transparent));
             addedSegments.Add(new(output[(index + 1)..(index + 1 + foundPhrase.Phrase.Length)], Brushes.OrangeRed, background, foundPhrase.GetActionString()));
             addedSegments.Add(new(output[(index + 1 + foundPhrase.Phrase.Length)..], defaultBrush, Brushes.Transparent));
             switch (foundPhrase.Effect)

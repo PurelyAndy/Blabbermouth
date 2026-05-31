@@ -1,15 +1,19 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Blabbermouth;
 
-public class PhraseEntry
+public partial class PhraseEntry : ObservableObject
 {
-    public string Phrase { get; set; } = "";
-    public int Intensity { get; set; } = 1;
-    public double Seconds { get; set; } = 0.3;
-    public Effect Effect { get; set; } = Effect.Shock;
-    public Activation Activation { get; set; } = IsWindows ? Activation.Both : Activation.Microphone;
+    [ObservableProperty] public partial string Phrase { get; set; } = "trigger text";
+    [ObservableProperty] public partial int Intensity { get; set; } = 1;
+    [ObservableProperty] public partial double Seconds { get; set; } = 0.3;
+    [ObservableProperty] public partial Effect Effect { get; set; } = Effect.Shock;
+    [ObservableProperty] public partial Activation Activation { get; set; } = IsWindows ? Activation.Both : Activation.Microphone;
     public static bool IsWindows => OperatingSystem.IsWindows();
 
     public string GetActionString()

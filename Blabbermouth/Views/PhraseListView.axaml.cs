@@ -42,84 +42,45 @@ public partial class PhraseListView : UserControl
                 .OfType<TextBox>()
                 .FirstOrDefault(tb => tb.Name == "PhraseTextBox");
             textBox?.Focus();
+            textBox?.SelectAll();
         }, DispatcherPriority.Background);
     }
 
-    private void RemovePhraseClicked(object? sender, RoutedEventArgs e)
+    private void PhraseRemove(object? sender, PhraseEntry e)
     {
-        if (sender is not Button button) return;
-        if (button.DataContext is not PhraseEntry entry) return;
-        _phrases.Remove(entry);
+        _phrases.Remove(e);
     }
 
-    private void UpClicked(object? sender, RoutedEventArgs e)
+    private void MovePhraseUp(object? sender, PhraseEntry e)
     {
-        if (sender is not Button button) return;
-        if (button.DataContext is not PhraseEntry entry) return;
-        int index = _phrases.IndexOf(entry);
+        int index = _phrases.IndexOf(e);
         if (index > 0)
         {
             _phrases.Move(index, index - 1);
         }
     }
 
-    private void DownClicked(object? sender, RoutedEventArgs e)
+    private void MovePhraseDown(object? sender, PhraseEntry e)
     {
-        if (sender is not Button button) return;
-        if (button.DataContext is not PhraseEntry entry) return;
-        int index = _phrases.IndexOf(entry);
+        int index = _phrases.IndexOf(e);
         if (index >= 0 && index < _phrases.Count - 1)
         {
             _phrases.Move(index, index + 1);
         }
     }
 
-    private void PhraseKeyPressed(object? sender, KeyEventArgs e)
+    private void PhraseEnterPressed(object? sender, RoutedEventArgs e)
     {
-        if (e.Key == Key.Enter)
-        {
-            AddClicked(sender, null!);
-        }
+        AddClicked(sender, null!);
     }
 
     private void PhraseLostFocus(object? sender, RoutedEventArgs e)
     {
-        if (sender is not TextBox tb) return;
-        if (tb.DataContext is not PhraseEntry entry) return;
-
+        var entry = ((sender as PhraseEntryView)!.DataContext as PhraseEntry)!;
         if (string.IsNullOrWhiteSpace(entry.Phrase))
         {
             _phrases.Remove(entry);
         }
-    }
-
-    private void EffectButtonClicked(object? sender, RoutedEventArgs e)
-    {
-        if (sender is not Button button) return;
-        if (button.DataContext is not PhraseEntry entry) return;
-
-        entry.Effect = (Effect)(((int)entry.Effect + 1) % 3);
-        _phrases[_phrases.IndexOf(entry)] = entry;
-    }
-
-    private void ActivationButtonClicked(object? sender, RoutedEventArgs e)
-    {
-        if (sender is not Button button) return;
-        if (button.DataContext is not PhraseEntry entry) return;
-
-        entry.Activation = (Activation)(((int)entry.Activation % 3) + 1);
-        _phrases[_phrases.IndexOf(entry)] = entry;
-    }
-
-    private void LengthChanged(object? sender, NumericUpDownValueChangedEventArgs e)
-    {
-        if (sender is not NumericUpDown nud) return;
-        if (nud.Value == null)
-        {
-            nud.Value = 0.3m;
-            return;
-        }
-        nud.Value = Math.Round(nud.Value.Value, 1);
     }
 
     public void ImportPhrases(string json)
