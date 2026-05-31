@@ -7,8 +7,8 @@
              x:Class="Blabbermouth.Views.PhraseEntryView"
              x:DataType="blabbermouth:PhraseEntry">
     <UserControl.Resources>
-        <blabbermouth:EffectEmojiConverter x:Key="EffectEmojiConverter"/>
-        <blabbermouth:ActivationEmojiConverter x:Key="ActivationEmojiConverter"/>
+        <blabbermouth:EffectEmojiConverter x:Key="EffectEmojiConverter" />
+        <blabbermouth:ActivationEmojiConverter x:Key="ActivationEmojiConverter" />
     </UserControl.Resources>
     <Grid ColumnDefinitions="Auto * Auto" Height="30">
         <StackPanel Orientation="Horizontal">
@@ -18,16 +18,16 @@
             </StackPanel>
             <Button Name="RemoveButton" Content="❌" Padding="0" Margin="0 0 5 0" />
         </StackPanel>
-        <TextBox Grid.Column="1" Padding="4 0 0 0" Name="PhraseTextBox" VerticalContentAlignment="Center" Text="{Binding Phrase, Mode=TwoWay}" HorizontalAlignment="Stretch" KeyDown="PhraseKeyPressed"/>
+        <TextBox Grid.Column="1" Padding="4 0 0 0" Name="PhraseTextBox" VerticalContentAlignment="Center" Text="{Binding Phrase, Mode=TwoWay}" HorizontalAlignment="Stretch" KeyDown="PhraseKeyPressed" />
         <StackPanel Grid.Column="2" Orientation="Horizontal">
             <StackPanel Name="SettingsPanel" Orientation="Horizontal" IsVisible="False">
-                <Button IsVisible="{Binding IsWindows}" Content="{Binding Activation, Converter={StaticResource ActivationEmojiConverter}}" ToolTip.Tip="{Binding Activation}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="5 0 0 0" Click="ActivationButtonClicked"/>
-                <Button Content="{Binding Effect, Converter={StaticResource EffectEmojiConverter}}" ToolTip.Tip="{Binding Effect}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="5 0 0 0" Click="EffectButtonClicked"/>
-                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="1" Maximum="100" Width="55" Value="{Binding Intensity, Mode=TwoWay}" ValueChanged="LengthChanged"/>
-                <TextBlock Text="⏱️" FontSize="18" VerticalAlignment="Center"/>
-                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="0.3" Maximum="15" Width="58" Value="{Binding Seconds, Mode=TwoWay}"/>
+                <Button IsVisible="{Binding IsWindows}" Content="{Binding Activation, Converter={StaticResource ActivationEmojiConverter}}" ToolTip.Tip="{Binding Activation}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="5 0 0 0" Click="ActivationButtonClicked" />
+                <Button Content="{Binding Effect, Converter={StaticResource EffectEmojiConverter}}" ToolTip.Tip="{Binding Effect}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="5 0 0 0" Click="EffectButtonClicked" />
+                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="1" Maximum="100" Width="55" Value="{Binding Intensity, Mode=TwoWay}" ValueChanged="LengthChanged" />
+                <TextBlock Text="⏱️" FontSize="18" VerticalAlignment="Center" />
+                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="0.3" Maximum="15" Width="58" Value="{Binding Seconds, Mode=TwoWay}" />
             </StackPanel>
-            <Button Content="⚙️" FontSize="18" Padding="0" Margin="5 0 0 0" Click="SettingsButtonClicked"/>
+            <Button Content="⚙️" FontSize="18" Padding="0" Margin="5 0 0 0" Click="SettingsButtonClicked" />
         </StackPanel>
     </Grid>
 </UserControl>

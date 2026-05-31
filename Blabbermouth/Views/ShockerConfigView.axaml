@@ -4,18 +4,18 @@
   <Grid ColumnDefinitions="*" RowDefinitions="Auto *">
     <Grid ColumnDefinitions="*" RowDefinitions="* * * * *">
       <Grid Name="ApiCredsGrid" Grid.Row="0" RowDefinitions="Auto Auto Auto Auto Auto" IsVisible="True">
-        <Button Grid.Row="0" VerticalAlignment="Bottom" Content="Test Credentials (Vibrate)" Click="TestCredentialsClicked" HorizontalAlignment="Stretch" Margin="0 0 0 5"/>
-        <TextBox Grid.Row="1" Name="UsernameTextBox" Watermark="Username" HorizontalAlignment="Stretch"/>
-        <TextBox Grid.Row="2" Name="ShareCodeTextBox" Watermark="Share Code" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch"/>
-        <TextBox Grid.Row="3" Name="ApiKeyTextBox" Watermark="API Key" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch"/>
-        <Button Name="UseSerialButton" Grid.Row="4" Content="Use Serial Port (lower-latency)" HorizontalAlignment="Stretch" Click="UseSerialClicked" Margin="0 5 0 0"/>
+        <Button Grid.Row="0" VerticalAlignment="Bottom" Content="Test Credentials (Vibrate)" Click="TestCredentialsClicked" HorizontalAlignment="Stretch" Margin="0 0 0 5" />
+        <TextBox Grid.Row="1" Name="UsernameTextBox" Watermark="Username" HorizontalAlignment="Stretch" />
+        <TextBox Grid.Row="2" Name="ShareCodeTextBox" Watermark="Share Code" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch" />
+        <TextBox Grid.Row="3" Name="ApiKeyTextBox" Watermark="API Key" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch" />
+        <Button Name="UseSerialButton" Grid.Row="4" Content="Use Serial Port (lower-latency)" HorizontalAlignment="Stretch" Click="UseSerialClicked" Margin="0 5 0 0" />
       </Grid>
 
       <Grid Name="SerialGrid" Grid.Row="1" RowDefinitions="Auto * Auto Auto" IsVisible="False">
-        <Button Grid.Row="0" VerticalAlignment="Bottom" Content="Test Port (Vibrate)" Click="TestPortClicked" HorizontalAlignment="Stretch" Margin="0 0 0 5"/>
-        <ListBox Grid.Row="1" Name="SerialPortsBox" Margin="0 0 0 5"/>
-        <TextBox Grid.Row="2" Name="ShockerIdBox" Watermark="Shocker ID" TextChanged="ShockerIdChanged" Text="0"/>
-        <Button Grid.Row="3" Content="Use PiShock API (over-the-internet)" HorizontalAlignment="Stretch" Click="UseApiClicked" Margin="0 5 0 0"/>
+        <Button Grid.Row="0" VerticalAlignment="Bottom" Content="Test Port (Vibrate)" Click="TestPortClicked" HorizontalAlignment="Stretch" Margin="0 0 0 5" />
+        <ListBox Grid.Row="1" Name="SerialPortsBox" Margin="0 0 0 5" />
+        <TextBox Grid.Row="2" Name="ShockerIdBox" Watermark="Shocker ID" TextChanged="ShockerIdChanged" Text="0" />
+        <Button Grid.Row="3" Content="Use PiShock API (over-the-internet)" HorizontalAlignment="Stretch" Click="UseApiClicked" Margin="0 5 0 0" />
       </Grid>
     </Grid>
   </Grid>

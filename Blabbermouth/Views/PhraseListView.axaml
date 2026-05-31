@@ -8,8 +8,8 @@
              x:Class="Blabbermouth.Views.PhraseListView">
     <Grid RowDefinitions="Auto *">
         <DockPanel Grid.Row="0">
-            <TextBlock DockPanel.Dock="Left" Text="Activation Phrases" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-            <Button DockPanel.Dock="Right" Content="+" Click="AddClicked" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right" Width="40"/>
+            <TextBlock DockPanel.Dock="Left" Text="Activation Phrases" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0" />
+            <Button DockPanel.Dock="Right" Content="+" Click="AddClicked" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right" Width="40" />
         </DockPanel>
          <ListBox Name="PhrasesBox" Grid.Row="1">
              <ListBox.ItemTemplate>

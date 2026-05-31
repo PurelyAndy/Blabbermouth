@@ -4,13 +4,13 @@
              x:Class="Blabbermouth.Views.AudioConfigView">
     <Grid RowDefinitions="* *">
         <StackPanel Grid.Row="0">
-            <CheckBox Name="MicCheckBox" Content="Listen to Microphone" IsCheckedChanged="MicCheckBoxChanged"/>
-            <ComboBox Name="MicInputComboBox" Margin="0 5 0 10" SelectionChanged="MicInputChanged"/>
+            <CheckBox Name="MicCheckBox" Content="Listen to Microphone" IsCheckedChanged="MicCheckBoxChanged" />
+            <ComboBox Name="MicInputComboBox" Margin="0 5 0 10" SelectionChanged="MicInputChanged" />
         </StackPanel>
         <Grid Grid.Row="1" RowDefinitions="* Auto">
             <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
-                <CheckBox Name="SpeakersCheckBox" Content="Listen to Speakers" IsCheckedChanged="SpeakersCheckBoxChanged"/>
-                <ComboBox Name="SpeakersInputComboBox" Margin="0 5 0 0" SelectionChanged="SpeakersInputChanged"/>
+                <CheckBox Name="SpeakersCheckBox" Content="Listen to Speakers" IsCheckedChanged="SpeakersCheckBoxChanged" />
+                <ComboBox Name="SpeakersInputComboBox" Margin="0 5 0 0" SelectionChanged="SpeakersInputChanged" />
             </StackPanel>
         </Grid>
     </Grid>
