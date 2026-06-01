@@ -4,13 +4,15 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Blabbermouth.Windows;
 
 namespace Blabbermouth;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
@@ -61,7 +63,7 @@ public partial class App : Application
             Button copyButton = new()
             {
                 Content = "Copy to Clipboard",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                HorizontalAlignment = HorizontalAlignment.Right,
                 Margin = new(10),
                 Padding = new(10, 5),
             };

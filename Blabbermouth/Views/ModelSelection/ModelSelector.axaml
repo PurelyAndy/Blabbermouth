@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Blabbermouth.Views.ModelSelection.ModelSelector">
+    <Grid RowDefinitions="* 1.6* *" ColumnDefinitions="* 2* *">
+        <Grid Grid.Row="1" Grid.Column="1" Background="Black" RowDefinitions="* 50">
+            <StackPanel>
+                <TextBlock Name="HeaderText" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 5 0 0" />
+                <TextBlock Name="SubheaderText" FontSize="14" HorizontalAlignment="Center" Margin="0 5 0 0" />
+                <ComboBox Name="ModelSelect" Margin="5 10 5 0" HorizontalAlignment="Stretch" SelectionChanged="ModelSelectionChanged" />
+                <TextBlock Name="CustomPathHintText" FontSize="12" HorizontalAlignment="Center" Margin="5 15 5 0" />
+                <HyperlinkButton Name="ModelsLink" FontSize="12" HorizontalAlignment="Center" Margin="5 0 5 0" />
+                <TextBox Name="CustomModelPath" Margin="5 5 5 0" HorizontalAlignment="Stretch" IsEnabled="False" />
+                <Button Name="BrowseButton" Content="Browse" Margin="5 5 5 5" HorizontalAlignment="Stretch" Click="BrowseButtonClicked" />
+                <ProgressBar Name="DownloadProgressBar" Margin="5 5 5 0" HorizontalAlignment="Stretch" ShowProgressText="True" ProgressTextFormat="Downloaded: {1:0}%" />
+            </StackPanel>
+            <Button Name="ContinueButton" Grid.Row="1" Content="Continue" FontSize="18" Click="ContinueButtonClicked" FontWeight="Bold" HorizontalAlignment="Stretch" Margin="5 0 5 5 " />
+        </Grid>
+    </Grid>
+</UserControl>
+

@@ -27,32 +27,32 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\AudioConfigView.axaml.cs">
+      <Compile Update="Views\AudioConfig.axaml.cs">
         <DependentUpon>AudioConfigView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\ModelSelectorView.axaml.cs">
-        <DependentUpon>ModelSelectorView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\MonitorView.axaml.cs">
+      <Compile Update="Views\SpeechRecognitionMonitor.axaml.cs">
         <DependentUpon>MonitorView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\PhraseListView.axaml.cs">
+      <Compile Update="Views\PhraseList.axaml.cs">
         <DependentUpon>PhraseListView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\ShockerConfigView.axaml.cs">
+      <Compile Update="Views\ShockerConfig.axaml.cs">
         <DependentUpon>ShockerConfigView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="ModelSelection\SelectVoskModelView.axaml.cs">
-        <DependentUpon>SelectVoskModelView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
       <Compile Update="Views\AboutView.axaml.cs">
         <DependentUpon>AboutView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Windows\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\ModelSelection\ModelSelector.axaml.cs">
+        <DependentUpon>ModelSelector.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
