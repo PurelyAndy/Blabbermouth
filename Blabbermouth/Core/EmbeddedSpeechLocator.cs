@@ -12,9 +12,13 @@ public static class EmbeddedSpeechLocator
     {
         if (OperatingSystem.IsWindows())
         {
-            List<string> speechFolders = Directory.EnumerateDirectories(Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
-                    "WindowsApps"))
+            string windowsAppsFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                "WindowsApps");
+            if (!Directory.Exists(windowsAppsFolder))
+                return;
+            
+            List<string> speechFolders = Directory.EnumerateDirectories(windowsAppsFolder)
                 .Where(d => new DirectoryInfo(d).Name.StartsWith("MicrosoftWindows.Speech."))
                 .ToList();
     
@@ -31,13 +35,21 @@ public static class EmbeddedSpeechLocator
             }
         }
         
-        List<string> vsCodeSpeechFolders = Directory.EnumerateDirectories(Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".vscode",
-                "extensions"))
-            .Where(d => new DirectoryInfo(d).Name.StartsWith("ms-vscode.vscode-speech-"))
-            .ToList();
+        List<string> vsCodeSpeechFolders = [];
+        
+        string vsCodeExtensionsFolder = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".vscode",
+            "extensions");
+        if (Directory.Exists(vsCodeExtensionsFolder))
+        {
+            vsCodeSpeechFolders.AddRange(Directory.EnumerateDirectories(vsCodeExtensionsFolder)
+                .Where(d => new DirectoryInfo(d).Name.StartsWith("ms-vscode.vscode-speech-"))
+                .ToList());
+        }
             
-        string insidersPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".vscode-insiders", "extensions");
+        string insidersPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".vscode-insiders",
+            "extensions");
         if (Directory.Exists(insidersPath))
         {
             vsCodeSpeechFolders.AddRange(Directory.EnumerateDirectories(insidersPath)
