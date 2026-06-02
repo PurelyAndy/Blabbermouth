@@ -56,6 +56,10 @@ public class App : Application
     {
         if (ex == null)
             return;
+        if (ex.ToString().Contains(
+                "A Task's exception(s) were not observed either by Waiting on the Task or accessing its Exception " +
+                "property. As a result, the unobserved exception was rethrown by the finalizer thread."))
+            return;
 
         File.WriteAllText($"error_{DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid()}.log", ex.ToString());
         Dispatcher.UIThread.Invoke(() =>
