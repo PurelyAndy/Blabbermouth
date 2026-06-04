@@ -72,18 +72,33 @@ public partial class Operation : ObservableObject
                 }
                 break;
             case OperationKind.Sound:
-                if (WaitForCompletion)
-                    await PlaybackManager.PlayAudio(FilePath);
-                else
-                    _ = PlaybackManager.PlayAudio(FilePath);
+                try
+                {
+                    if (WaitForCompletion)
+                        await PlaybackManager.PlayAudio(FilePath);
+                    else
+                        _ = PlaybackManager.PlayAudio(FilePath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error playing sound '{FilePath}': {ex}");
+                }
                 break;
             case OperationKind.Application:
-                ProcessStartInfo psi = new(FilePath) { UseShellExecute = true };
-                Process? process = Process.Start(psi);
-                if (WaitForCompletion && process is not null)
+                try
                 {
-                    await process.WaitForExitAsync();
+                    ProcessStartInfo psi = new(FilePath) { UseShellExecute = true };
+                    using Process? process = Process.Start(psi);
+                    if (WaitForCompletion && process is not null)
+                    {
+                        await process.WaitForExitAsync();
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error launching application '{FilePath}': {ex}");
+                }
+
                 break;
             case OperationKind.Wait:
                 await Task.Delay((int)(Length * 1000));
