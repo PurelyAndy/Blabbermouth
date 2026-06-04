@@ -87,7 +87,7 @@ public static class Settings
         if (!Contains("micDevice"))             Add("micDevice",            "");
         if (!Contains("speakerDevice"))         Add("speakerDevice",        "");
         if (!Contains("useMic"))                Add("useMic",               false);
-        if (!Contains("useSpeaker"))            Add("useSpeaker",           true);
+        if (!Contains("useSpeaker"))            Add("useSpeaker",           false);
         if (!Contains("lastPhrases"))           Add("lastPhrases",          "[]");
         if (!Contains("lastModel"))             Add("lastModel",            "");
         if (!Contains("lastModelWasCustom"))    Add("lastModelWasCustom",   false);
