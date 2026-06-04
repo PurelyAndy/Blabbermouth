@@ -12,6 +12,7 @@ public partial class OperationItem : UserControl
     public event EventHandler<Operation>? MoveUp;
     public event EventHandler<Operation>? MoveDown;
     public event EventHandler<Operation>? Remove;
+    public event EventHandler? Changed;
     public OperationItem()
     {
         InitializeComponent();
@@ -28,6 +29,7 @@ public partial class OperationItem : UserControl
         if (DataContext is not Operation op) return;
         op.Kind = (OperationKind)(((int)op.Kind + 1) % Enum.GetValues<OperationKind>().Length);
         UpdateVisibility();
+        Changed?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateVisibility()
@@ -42,5 +44,6 @@ public partial class OperationItem : UserControl
     {
         if (DataContext is not Operation op) return;
         op.WaitForCompletion = !op.WaitForCompletion;
+        Changed?.Invoke(this, EventArgs.Empty);
     }
 }

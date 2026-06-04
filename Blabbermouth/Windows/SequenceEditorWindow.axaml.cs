@@ -1,6 +1,8 @@
+using System;
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Blabbermouth.Data;
 using DialogHostAvalonia;
 
@@ -29,12 +31,14 @@ public partial class SequenceEditorWindow : Window
     {
         if (DataContext is not OperationSequence ops) return;
         ops.Add(new(OperationKind.Vibration, 1, 20));
+        UpdateWarningText();
     }
 
     private void OperationRemove(object? sender, Operation e)
     {
         if (DataContext is not OperationSequence ops) return;
         ops.Remove(e);
+        UpdateWarningText();
     }
 
     private void MoveOperationUp(object? sender, Operation e)
@@ -45,6 +49,7 @@ public partial class SequenceEditorWindow : Window
         {
             ops.Move(index, index - 1);
         }
+        UpdateWarningText();
     }
     
     private void MoveOperationDown(object? sender, Operation e)
@@ -55,6 +60,7 @@ public partial class SequenceEditorWindow : Window
         {
             ops.Move(index, index + 1);
         }
+        UpdateWarningText();
     }
 
     private void DoneClicked(object? sender, RoutedEventArgs e)
@@ -89,5 +95,45 @@ public partial class SequenceEditorWindow : Window
     {
         if (DataContext is not OperationSequence ops) return;
         await ops.Perform();
+    }
+
+    private void OperationItem_OnChanged(object? sender, EventArgs e)
+    {
+        UpdateWarningText();
+    }
+
+    private void UpdateWarningText()
+    {
+        if (DataContext is not OperationSequence ops) return;
+        bool shockerActionInGroup = false;
+        bool hasMultipleShockerActions = false;
+        foreach (Operation op in ops)
+        {
+            if ((int)op.Kind < 3)
+            {
+                if (shockerActionInGroup)
+                {
+                    hasMultipleShockerActions = true;
+                    break;
+                }
+                shockerActionInGroup = true;
+            }
+            if (op.WaitForCompletion)
+            {
+                shockerActionInGroup = false;
+            }
+        }
+
+        if (hasMultipleShockerActions)
+        {
+            WarningBlock.Text = "⚠️ The shocker can only perform one action at a time. ⚠️\n" +
+                                "⚠️You should add waits between shocker actions. ⚠️";
+            WarningBlock.Foreground = Brushes.Gold;
+        }
+        else
+        {
+            WarningBlock.Text = "No warnings";
+            WarningBlock.Foreground = Brushes.White;
+        }
     }
 }
