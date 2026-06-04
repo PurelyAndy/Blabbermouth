@@ -2,8 +2,39 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:data="clr-namespace:Blabbermouth.Data"
+        xmlns:views="clr-namespace:Blabbermouth.Views"
+        xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="250"
+        Width="650" Height="300"
         x:Class="Blabbermouth.Windows.SequenceEditorWindow"
-        Title="SequenceEditorWindow">
-    Welcome to Avalonia!
+        x:DataType="data:OperationSequence"
+        Closing="OnClosing"
+        Title="Sequence Editor">
+    <Grid>
+        <Grid RowDefinitions="Auto * Auto Auto">
+            <Panel Grid.Row="0">
+                <Button Content="Test" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Click="TestClicked" />
+                <Button Content="+" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right" Width="40" Click="AddClicked" />
+            </Panel>
+            <ListBox Name="OperationList" Grid.Row="1">
+                <ListBox.Styles> 
+                    <Style Selector="ListBoxItem"> <Setter Property="Padding" Value="0" /> </Style> 
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="data:Operation">
+                        <views:OperationItem Remove="OperationRemove" MoveUp="MoveOperationUp" MoveDown="MoveOperationDown" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Grid.Row="2" Text="{Binding AsString}" TextWrapping="Wrap" />
+            <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Content="Cancel" Click="CancelClicked" />
+                <Button Content="Done" Click="DoneClicked" />
+            </StackPanel>
+        </Grid>
+        <dialogHost:DialogHost Name="Dialog" CloseOnClickAway="False" Height="1000">
+            <dialogHost:DialogHost.DialogContent />
+        </dialogHost:DialogHost>
+    </Grid>
 </Window>

@@ -23,6 +23,7 @@
         <PackageReference Include="Microsoft.CognitiveServices.Speech.Extension.Telemetry" Version="1.50.0" />
         <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.2" />
         <PackageReference Include="SoundFlow" Version="1.4.1" />
+        <PackageReference Include="SoundFlow.Codecs.FFMpeg" Version="1.4.0" />
         <PackageReference Include="System.IO.Ports" Version="11.0.0-preview.4.26230.115" />
     </ItemGroup>
 

@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:data="clr-namespace:Blabbermouth.Data"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="42"
+             x:Class="Blabbermouth.Views.OperationItem"
+             x:DataType="data:Operation">
+    <UserControl.Resources>
+        <data:OperationKindEmojiConverter x:Key="OperationEmojiConverter" />
+        <data:PlayPauseOperationToEmojiConverter x:Key="PlayPauseOperationToEmojiConverter" />
+        <data:WaitForCompletionTooltipConverter x:Key="WaitForCompletionTooltipConverter" />
+        <data:DoesWaitConverter x:Key="DoesWaitConverter" />
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto Auto">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto Auto * Auto" Height="30">
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <StackPanel>
+                    <Button Name="UpButton" Content="↑" FontSize="10" Padding="0" />
+                    <Button Name="DownButton" Content="↓" FontSize="10" Padding="0" />
+                </StackPanel>
+                <Button Name="RemoveButton" Content="❌" Padding="0" Margin="0 0 5 0" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="{Binding Kind, Converter={StaticResource OperationEmojiConverter}}" ToolTip.Tip="{Binding Kind}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Click="KindButtonClicked" />
+            <StackPanel Grid.Column="2" Name="StrengthGroup" Orientation="Horizontal">
+                <TextBlock Text="💪" FontSize="18" VerticalAlignment="Center" />
+                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="1" Maximum="100" Width="55" Value="{Binding Strength, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Grid.Column="3" Name="LengthGroup" Orientation="Horizontal">
+                <TextBlock Text="⏱️" FontSize="18" VerticalAlignment="Center" />
+                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="0.3" Maximum="15" Width="58" Value="{Binding Length, Mode=TwoWay}" />
+            </StackPanel>
+            <TextBox Grid.Column="4" Name="PathTextBox" Margin="5 0 0 0" Padding="4 0 0 0" VerticalContentAlignment="Center" Text="{Binding FilePath, Mode=TwoWay}" HorizontalAlignment="Stretch" />
+            <Button Grid.Column="5" FontSize="18" FontFamily="Default" Padding="0" Margin="5 0 0 0" Click="WaitForCompletionButtonClicked">
+                <Button.Content>
+                    <MultiBinding Converter="{StaticResource PlayPauseOperationToEmojiConverter}">
+                        <Binding Path="WaitForCompletion"/>
+                        <Binding Path="Kind"/>
+                    </MultiBinding>
+                </Button.Content>
+                <ToolTip.Tip>
+                    <MultiBinding Converter="{StaticResource WaitForCompletionTooltipConverter}">
+                        <Binding Path="WaitForCompletion"/>
+                        <Binding Path="Kind"/>
+                    </MultiBinding>
+                </ToolTip.Tip>
+            </Button>
+        </Grid>
+        <ContentControl Grid.Row="1" Height="12">
+            <ContentControl.IsVisible>
+                <MultiBinding Converter="{StaticResource DoesWaitConverter}">
+                    <Binding Path="WaitForCompletion"/>
+                    <Binding Path="Kind"/>
+                </MultiBinding>
+            </ContentControl.IsVisible>
+            <Rectangle VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="2" Fill="#FFA0A0A0" />
+        </ContentControl>
+    </Grid>
+</UserControl>

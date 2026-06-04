@@ -4,24 +4,28 @@ using Avalonia.Data.Converters;
 
 namespace Blabbermouth.Data;
 
-public enum Effect
+public enum OperationKind
 {
     Shock,
     Vibration,
-    Both,
+    Sound,
+    Application,
+    Wait,
 }
 
-public class EffectEmojiConverter : IValueConverter
+public class OperationKindEmojiConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is Effect effect)
+        if (value is OperationKind effect)
         {
             return effect switch
             {
-                Effect.Shock => "⚡",
-                Effect.Vibration => "📳",
-                Effect.Both => "🌩️",
+                OperationKind.Shock => "⚡",
+                OperationKind.Vibration => "📳",
+                OperationKind.Sound => "🔊",
+                OperationKind.Application => "🖥️",
+                OperationKind.Wait => "⏳",
                 _ => null,
             };
         }

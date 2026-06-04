@@ -10,29 +10,36 @@ public static class EmbeddedSpeechLocator
 {
     public static void FindModels()
     {
-        if (OperatingSystem.IsWindows())
+        try
         {
-            string windowsAppsFolder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
-                "WindowsApps");
-            if (!Directory.Exists(windowsAppsFolder))
-                return;
-            
-            List<string> speechFolders = Directory.EnumerateDirectories(windowsAppsFolder)
-                .Where(d => new DirectoryInfo(d).Name.StartsWith("MicrosoftWindows.Speech."))
-                .ToList();
-    
-            if (speechFolders.Count > 0)
+            if (OperatingSystem.IsWindows())
             {
-                foreach (string folder in speechFolders)
+                string windowsAppsFolder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                    "WindowsApps");
+                if (!Directory.Exists(windowsAppsFolder))
+                    return;
+            
+                List<string> speechFolders = Directory.EnumerateDirectories(windowsAppsFolder)
+                    .Where(d => new DirectoryInfo(d).Name.StartsWith("MicrosoftWindows.Speech."))
+                    .ToList();
+    
+                if (speechFolders.Count > 0)
                 {
-                    string[] parts = new DirectoryInfo(folder).Name.Split('.');
-                    if (parts.Length < 3) continue;
+                    foreach (string folder in speechFolders)
+                    {
+                        string[] parts = new DirectoryInfo(folder).Name.Split('.');
+                        if (parts.Length < 3) continue;
                     
-                    string language = parts[2] + " (source: Windows)";
-                    UseIfComprehensible(folder, language);
+                        string language = parts[2] + " (source: Windows)";
+                        UseIfComprehensible(folder, language);
+                    }
                 }
             }
+        }
+        catch (Exception ignored)
+        {
+            // normal people haven't `takeown`'d their WindowsApps folder. it's not a big deal but it makes me sad.
         }
         
         List<string> vsCodeSpeechFolders = [];

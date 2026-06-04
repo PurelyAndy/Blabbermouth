@@ -8,7 +8,6 @@ using Avalonia.Threading;
 using Blabbermouth.Data;
 using Blabbermouth.SttProviders;
 using Blabbermouth.Windows;
-using Effect = Blabbermouth.Data.Effect;
 
 namespace Blabbermouth.Core;
 
@@ -96,7 +95,7 @@ public static class SttManager
 
     private static async Task ProcessRecognizedSpeech(string words, Activation activation, ISolidColorBrush defaultBrush)
     {
-        Data.PhraseEntry? foundPhrase = MainWindow.I.PhraseList.Phrases.FirstOrDefault(p =>
+        PhraseEntry? foundPhrase = MainWindow.I.PhraseList.Phrases.FirstOrDefault(p =>
             (p.Activation & activation) != 0
             && (   words.Contains($" {p.Phrase} ", StringComparison.CurrentCultureIgnoreCase)
                 || words.StartsWith($"{p.Phrase} ", StringComparison.CurrentCultureIgnoreCase)
@@ -123,30 +122,15 @@ public static class SttManager
             }
             
             addedSegments.Add(new(output[..(index + 1)], defaultBrush, Brushes.Transparent));
-            addedSegments.Add(new(output[(index + 1)..(index + 1 + foundPhrase.Phrase.Length)], Brushes.OrangeRed, background, foundPhrase.GetActionString()));
+            addedSegments.Add(new(output[(index + 1)..(index + 1 + foundPhrase.Phrase.Length)], Brushes.OrangeRed, background, foundPhrase.Operations.ToString()));
             addedSegments.Add(new(output[(index + 1 + foundPhrase.Phrase.Length)..], defaultBrush, Brushes.Transparent));
-            switch (foundPhrase.Effect)
-            {
-                case Effect.Shock:
-                    await Operate(foundPhrase.Intensity, foundPhrase.Seconds, true);
-                    break;
-                case Effect.Vibration:
-                    await Operate(foundPhrase.Intensity, foundPhrase.Seconds, false);
-                    break;
-                case Effect.Both:
-                    await Operate(foundPhrase.Intensity, foundPhrase.Seconds, false);
-                    await Operate(foundPhrase.Intensity, foundPhrase.Seconds, true);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(foundPhrase.Effect), foundPhrase.Effect,
-                        $"Bad phrase effect for phrase \"{foundPhrase.Phrase}\"");
-            }
+            await foundPhrase.Operations.Perform();
         }
 
         MainWindow.I.Monitor.AddSegments(addedSegments);
     }
 
-    private static async Task Operate(int intensity, double seconds, bool shock)
+    public static async Task Operate(int intensity, double seconds, bool shock)
     {
         int ms = (int)(seconds * 1000);
         if (MainWindow.I.ShockerConfig.UsingSerial)

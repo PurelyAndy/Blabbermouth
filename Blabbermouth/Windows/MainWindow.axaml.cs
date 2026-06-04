@@ -304,5 +304,5 @@ public partial class MainWindow : Window
     }
 }
 
-[JsonSerializable(typeof(List<Data.PhraseEntry>))]
+[JsonSerializable(typeof(List<PhraseEntry>))]
 public partial class PhraseListJsonContext : JsonSerializerContext;
