@@ -16,7 +16,6 @@ public static class Extensions
             .Replace("Play sound", "Played sound")
             .Replace("launch application", "launched application")
             .Replace("Launch application", "Launched application")
-            .Replace("Launch application", "Launched application")
             .Replace("wait", "waited")
             .Replace("Wait", "Waited");
     }
