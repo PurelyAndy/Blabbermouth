@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Blabbermouth.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -15,6 +16,9 @@ public partial class Operation : ObservableObject
     [ObservableProperty] public partial string FilePath { get; set; } = "";
     [ObservableProperty] public partial bool WaitForCompletion { get; set; }
 
+    [JsonConstructor]
+    public Operation() { }
+    
     public Operation(OperationKind kind, double length, int strength)
     {
         if (kind is not OperationKind.Shock and not OperationKind.Vibration)
