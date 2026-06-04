@@ -3,7 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using ICSharpCode.SharpZipLib.BZip2;
+using ICSharpCode.SharpZipLib.Tar;
 
 namespace Blabbermouth.Data;
 
@@ -63,25 +66,12 @@ public record DownloadableModel(
         }
         else if (isTarBz2)
         {
-            ProcessStartInfo psi = new()
-            {
-                FileName = "tar",
-                Arguments = $"-xjf \"{fileStream.Name}\" -C \"{DownloadedModelsFolder}\"",
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-            };
-            using Process process = Process.Start(psi)!;
+            await using FileStream fs = File.OpenRead(fileStream.Name);
+            await using BZip2InputStream bz2 = new(fs);
             
-            string stderr = await process.StandardError.ReadToEndAsync();
-            string stdout = await process.StandardOutput.ReadToEndAsync();
-            
-            await process.WaitForExitAsync();
-            
-            if (process.ExitCode != 0)
-            {
-                throw new($"Extraction failed with code {process.ExitCode}.\nStdout: {stdout}\nStderr: {stderr}");
-            }
+            var tar = TarArchive.CreateInputTarArchive(bz2, Encoding.UTF8);
+            tar.ExtractContents(DownloadedModelsFolder);
+            tar.Close();
         }
         else
         {

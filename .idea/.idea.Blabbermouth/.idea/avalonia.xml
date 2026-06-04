@@ -19,6 +19,7 @@
         <entry key="Blabbermouth/Views/PhraseList.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/Views/PhraseListItem.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/Views/PhraseListView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
+        <entry key="Blabbermouth/Views/ShockerConfig.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/Views/ShockerConfigView.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/Views/SpeechRecognitionMonitor.axaml" value="Blabbermouth/Blabbermouth.csproj" />
         <entry key="Blabbermouth/Views/TemplatedControl1.axaml" value="Blabbermouth/Blabbermouth.csproj" />
