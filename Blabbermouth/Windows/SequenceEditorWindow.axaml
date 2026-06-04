@@ -9,6 +9,7 @@
         Width="650" Height="300"
         x:Class="Blabbermouth.Windows.SequenceEditorWindow"
         x:DataType="data:OperationSequence"
+        WindowStartupLocation="CenterOwner"
         Closing="OnClosing"
         Title="Sequence Editor">
     <Grid>
