@@ -34,8 +34,8 @@ public partial class Operation : ObservableObject
     
     public Operation(OperationKind kind, double length)
     {
-        if (kind != OperationKind.Wait)
-            throw new ArgumentException($"Must be {OperationKind.Wait}.", nameof(kind));
+        if (kind is not OperationKind.Wait and not OperationKind.Beep)
+            throw new ArgumentException($"Must be {OperationKind.Wait} or {OperationKind.Beep}.", nameof(kind));
         Kind = kind;
         Length = length;
         WaitForCompletion = true;
@@ -48,7 +48,7 @@ public partial class Operation : ObservableObject
         {
             OperationKind.Shock or OperationKind.Vibration => Length == other.Length && Strength == other.Strength,
             OperationKind.Sound or OperationKind.Application => FilePath == other.FilePath,
-            OperationKind.Wait => Length == other.Length,
+            OperationKind.Wait or OperationKind.Beep => Length == other.Length,
             _ => throw new ArgumentOutOfRangeException(),
         };
     }
@@ -58,14 +58,21 @@ public partial class Operation : ObservableObject
         switch (Kind)
         {
             case OperationKind.Shock:
-                await SttManager.Operate(Strength, Length, true);
+                await SttManager.Operate(Strength, Length, ShockerAction.Shock);
                 if (WaitForCompletion)
                 {
                     await Task.Delay((int)(Length * 1000));
                 }
                 break;
             case OperationKind.Vibration:
-                await SttManager.Operate(Strength, Length, false);
+                await SttManager.Operate(Strength, Length, ShockerAction.Vibrate);
+                if (WaitForCompletion)
+                {
+                    await Task.Delay((int)(Length * 1000));
+                }
+                break;
+            case OperationKind.Beep:
+                await SttManager.Operate(Strength, Length, ShockerAction.Beep);
                 if (WaitForCompletion)
                 {
                     await Task.Delay((int)(Length * 1000));
@@ -98,7 +105,6 @@ public partial class Operation : ObservableObject
                 {
                     Console.WriteLine($"Error launching application '{FilePath}': {ex}");
                 }
-
                 break;
             case OperationKind.Wait:
                 await Task.Delay((int)(Length * 1000));
@@ -116,7 +122,7 @@ public partial class Operation : ObservableObject
                 { WaitForCompletion = WaitForCompletion },
             OperationKind.Sound or OperationKind.Application => new(Kind, FilePath) 
                 { WaitForCompletion = WaitForCompletion },
-            OperationKind.Wait => new(Kind, Length),
+            OperationKind.Wait or OperationKind.Beep => new(Kind, Length),
             _ => throw new ArgumentOutOfRangeException(nameof(Kind)),
         };
     }
@@ -127,9 +133,10 @@ public partial class Operation : ObservableObject
         {
             OperationKind.Shock => "shock for " + Length + " second" + (Length == 1 ? "" : "s") + " at strength " + Strength,
             OperationKind.Vibration => "vibrate for " + Length + " second" + (Length == 1 ? "" : "s") + " at strength " + Strength,
+            OperationKind.Beep => "beep for " + Length + " second" + (Length == 1 ? "" : "s"),
             OperationKind.Sound => "play sound '" + FilePath + "'",
             OperationKind.Application => "launch application '" + FilePath + "'",
-            OperationKind.Wait => "wait for " + Length + "ms",
+            OperationKind.Wait => "wait for " + Length + " second" + (Length == 1 ? "" : "s"),
             _ => "???",
         };
     }

@@ -132,16 +132,16 @@ public static class SttManager
         MainWindow.I.Monitor.AddSegments(addedSegments);
     }
 
-    public static async Task Operate(int intensity, double seconds, bool shock)
+    public static async Task Operate(int intensity, double seconds, ShockerAction op)
     {
         int ms = (int)(seconds * 1000);
         if (MainWindow.I.ShockerConfig.UsingSerial)
         {
-            await PiShock.SerialOperate(intensity, ms, shock);
+            await PiShock.SerialOperate(intensity, ms, op);
         }
         else
         {
-            string response = await PiShock.Operate(intensity, ms, shock);
+            string response = await PiShock.Operate(intensity, ms, op);
             Debug.WriteLine($"PiShock response: {response}");
         }
     }

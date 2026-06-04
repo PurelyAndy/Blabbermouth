@@ -33,7 +33,7 @@ public partial class OperationItem : UserControl
     private void UpdateVisibility()
     {
         if (DataContext is not Operation op) return;
-        LengthGroup.IsVisible = op.Kind is OperationKind.Shock or OperationKind.Vibration or OperationKind.Wait;
+        LengthGroup.IsVisible = op.Kind is OperationKind.Shock or OperationKind.Vibration or OperationKind.Wait or OperationKind.Beep;
         StrengthGroup.IsVisible = op.Kind is OperationKind.Shock or OperationKind.Vibration;
         PathTextBox.IsVisible = op.Kind is OperationKind.Sound or OperationKind.Application;
     }

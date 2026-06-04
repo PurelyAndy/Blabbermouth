@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Blabbermouth.Data;
 using Blabbermouth.Windows;
 using DialogHostAvalonia;
 
@@ -20,7 +21,7 @@ public static class PiShock
     public static SerialPort? SerialPort;
     public static int ShockerID;
 
-    public static async Task<string> Operate(int intensity, int duration, bool shock)
+    public static async Task<string> Operate(int intensity, int duration, ShockerAction op)
     {
         if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(ShareCode) || string.IsNullOrEmpty(ApiKey))
             return "PiShock not configured";
@@ -30,7 +31,7 @@ public static class PiShock
             code = ShareCode,
             duration = duration,
             intensity = intensity,
-            op = shock ? 0 : 1,
+            op = (int)op,
             apikey = ApiKey,
             username = Username,
             name = "Blabbermouth",
@@ -42,7 +43,7 @@ public static class PiShock
         return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task SerialOperate(int intensity, int ms, bool shock)
+    public static async Task SerialOperate(int intensity, int ms, ShockerAction op)
     {
         if (SerialPort is not { IsOpen: true })
         {
@@ -58,7 +59,7 @@ public static class PiShock
             value = new SerialOperation
             {
                 id = ShockerID,
-                op = shock ? "shock" : "vibrate",
+                op = op.ToString().ToLowerInvariant(),
                 duration = ms,
                 intensity = intensity,
             },

@@ -8,6 +8,7 @@ public enum OperationKind
 {
     Shock,
     Vibration,
+    Beep,
     Sound,
     Application,
     Wait,
@@ -23,6 +24,7 @@ public class OperationKindEmojiConverter : IValueConverter
             {
                 OperationKind.Shock => "⚡",
                 OperationKind.Vibration => "📳",
+                OperationKind.Beep => "🚨",
                 OperationKind.Sound => "🔊",
                 OperationKind.Application => "🖥️",
                 OperationKind.Wait => "⏳",

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Blabbermouth.Core;
+using Blabbermouth.Data;
 using Blabbermouth.Windows;
 using DialogHostAvalonia;
 
@@ -112,7 +113,7 @@ public partial class ShockerConfig : UserControl
         PiShock.ShareCode = shareCode;
         PiShock.ApiKey = apiKey;
 
-        string result = await PiShock.Operate(50, 1000, false);
+        string result = await PiShock.Operate(50, 1000, ShockerAction.Vibrate);
         return result switch
         {
             "\"Operation Attempted.\"" => null,
@@ -157,7 +158,7 @@ public partial class ShockerConfig : UserControl
             goto cleanup;
         }
 
-        await PiShock.SerialOperate(50, 1000, false);
+        await PiShock.SerialOperate(50, 1000, ShockerAction.Vibrate);
         await Task.Delay(1500);
         string response = string.Empty;
         try
