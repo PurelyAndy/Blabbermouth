@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.IO.Ports;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Blabbermouth.Core;
 using Blabbermouth.Data;
@@ -225,6 +227,29 @@ public partial class ShockerConfig : UserControl
         }
         Settings.Set("shockerId", textBox.Text);
     }
+
+    private async void ShareCodeTextBox_OnPastingFromClipboard(object? sender, RoutedEventArgs e)
+    {
+        Task<string?>? task = MainWindow.I.Clipboard?.TryGetTextAsync();
+        if (task is null) return;
+        string? clipboardText = await task;
+        if (string.IsNullOrEmpty(clipboardText)) return;
+        Regex shareCodeLinkRegex = ShareCodeLinkRegex();
+        Regex shareCodeRegex = ShareCodeRegex();
+        
+        Match? linkMatch = shareCodeLinkRegex.Match(clipboardText);
+        if (linkMatch.Success)
+            ShareCodeTextBox.Text = linkMatch.Groups[1].Value;
+        else if (shareCodeRegex.Match(clipboardText) is { Success: true } codeMatch)
+            ShareCodeTextBox.Text = codeMatch.Groups[1].Value;
+        e.Handled = true;
+    }
+
+    [GeneratedRegex("https://pishock.com/#/Control?sharecode=([0-9A-F]{11})")]
+    private static partial Regex ShareCodeLinkRegex();
+
+    [GeneratedRegex("([0-9A-F]{11})")]
+    private static partial Regex ShareCodeRegex();
 }
 
 

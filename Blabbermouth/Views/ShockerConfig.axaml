@@ -6,7 +6,7 @@
       <Grid Name="ApiCredsGrid" Grid.Row="0" RowDefinitions="Auto Auto Auto Auto Auto" IsVisible="True">
         <Button Grid.Row="0" VerticalAlignment="Bottom" Content="Test Credentials (Vibrate)" Click="TestCredentialsClicked" HorizontalAlignment="Stretch" Margin="0 0 0 5" />
         <TextBox Grid.Row="1" Name="UsernameTextBox" Watermark="Username" HorizontalAlignment="Stretch" />
-        <TextBox Grid.Row="2" Name="ShareCodeTextBox" Watermark="Share Code" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch" />
+        <TextBox Grid.Row="2" Name="ShareCodeTextBox" Watermark="Share Code" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch" PastingFromClipboard="ShareCodeTextBox_OnPastingFromClipboard" />
         <TextBox Grid.Row="3" Name="ApiKeyTextBox" Watermark="API Key" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch" />
         <Button Name="UseSerialButton" Grid.Row="4" Content="Use Serial Port (lower-latency)" HorizontalAlignment="Stretch" Click="UseSerialClicked" Margin="0 5 0 0" />
       </Grid>
