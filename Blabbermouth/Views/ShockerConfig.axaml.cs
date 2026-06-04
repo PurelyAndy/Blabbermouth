@@ -199,14 +199,19 @@ public partial class ShockerConfig : UserControl
         {
             await MainWindow.ShowErrorAsync(
                 "Test command sent successfully! If your shocker vibrated, everything is working correctly. " +
-                "If it didn't, make sure the shocker ID is correct or try a different port.",
+                "If it didn't, make sure the shocker ID is correct. It can be found in the gears icon in the " +
+                "PiShock website. It's not the big blue number at the top of the website, that's the hub ID.",
                 "Port selected successfully");
             return;
         }
 
         object? result = await DialogHost.Show(new DialogBox(MainWindow.I.DialogNoClickAway,
             $"Unexpected response from the serial device:\n{response}\n" +
-            "If your device did not vibrate, this is the wrong port. Otherwise, it's a-ok.",
+            "If your device did not vibrate, either:\n" +
+            "A: This is the wrong port.\n" +
+            "Or B: Your shocker ID is incorrect. It can be found in the gears icon in the PiShock website. " +
+            "It's not the big blue number at the top of the website, that's the hub ID.\n\n" +
+            "If it did vibrate, everything's a-ok and you can totally ignore this message.",
             "Error? Port will be selected if it vibrated", "It vibrated", "It didn't vibrate"), MainWindow.I.DialogNoClickAway);
         if (result is "It vibrated")
         {
