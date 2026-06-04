@@ -46,7 +46,7 @@ public static class SttManager
     public static void UpdateMicRecognizer()
     {
         _micRecognizer?.Stop();
-        if (!ListenToMic) return;
+        if (!ListenToMic || !Enabled) return;
 
         string? deviceId = MainWindow.I.AudioConfig.SelectedMicDeviceId;
         if (string.IsNullOrWhiteSpace(deviceId)) return;
@@ -71,7 +71,7 @@ public static class SttManager
     public static void UpdateSpeakersRecognizer()
     {
         _speakersRecognizer?.Stop();
-        if (!ListenToSpeakers || !OperatingSystem.IsWindows()) return;
+        if (!ListenToSpeakers || !Enabled || !OperatingSystem.IsWindows()) return;
 
         string? deviceId = MainWindow.I.AudioConfig.SelectedSpeakersDeviceId;
         if (string.IsNullOrWhiteSpace(deviceId)) return;
