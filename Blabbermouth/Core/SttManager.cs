@@ -7,6 +7,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Blabbermouth.Data;
 using Blabbermouth.SttProviders;
+using Blabbermouth.Util;
 using Blabbermouth.Windows;
 
 namespace Blabbermouth.Core;
@@ -123,7 +124,7 @@ public static class SttManager
             }
             
             addedSegments.Add(new(output[..(index + 1)], defaultBrush, Brushes.Transparent));
-            addedSegments.Add(new(output[(index + 1)..(index + 1 + foundPhrase.Phrase.Length)], Brushes.OrangeRed, background, foundPhrase.Operations.ToString()));
+            addedSegments.Add(new(output[(index + 1)..(index + 1 + foundPhrase.Phrase.Length)], Brushes.OrangeRed, background, foundPhrase.Operations.ToString().ToPastTense()));
             addedSegments.Add(new(output[(index + 1 + foundPhrase.Phrase.Length)..], defaultBrush, Brushes.Transparent));
             await foundPhrase.Operations.Perform();
         }
