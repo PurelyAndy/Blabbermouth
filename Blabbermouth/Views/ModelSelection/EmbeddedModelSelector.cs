@@ -32,27 +32,11 @@ public sealed class EmbeddedModelSelector : ModelSelector
     {
         if (!string.IsNullOrWhiteSpace(CustomModelPathValue))
         {
-            string? eula = EmbeddedSpeechLocator.GetEula(CustomModelPathValue);
-            if (string.IsNullOrWhiteSpace(eula))
-            {
-                await MainWindow.ShowErrorAsync(
-                    "This might not be a valid embedded speech model folder. " +
-                    "If you're sure it is, please report this issue with information about where you got the model.",
-                    "Could not find EULA");
-                return;
-            }
-            string? version = EmbeddedSpeechLocator.GetVersion(CustomModelPathValue);
-            if (string.IsNullOrWhiteSpace(version))
-            {
-                await MainWindow.ShowErrorAsync(
-                    "This might not be a valid embedded speech model folder. " +
-                    "If you're sure it is, please report this issue with information about where you got the model.",
-                    "Could not find version");
-                return;
-            }
-            SttManager.Model = new(eula, CustomModelPathValue, version);
-            SttManager.Kind = Kind;
-            SttManager.ResetRecognizers();
+            if (await SetModelToCustom(CustomModelPathValue))
+	            return;
+            
+            Settings.Set("lastModel", CustomModelPathValue);
+            Settings.Set("lastModelWasCustom", true);
 
             MainWindow.CloseDialog();
             return;
@@ -65,6 +49,8 @@ public sealed class EmbeddedModelSelector : ModelSelector
             SttManager.Model = existingModel;
             SttManager.Kind = Kind;
             SttManager.ResetRecognizers();
+            
+            Settings.Set("lastModel", selectedModel);
 
             MainWindow.CloseDialog();
             return;
@@ -96,14 +82,41 @@ public sealed class EmbeddedModelSelector : ModelSelector
         SttManager.Model = new(eula2, model.DirectoryPath, version2);
         SttManager.Kind = Kind;
         SttManager.ResetRecognizers();
-
+        
+        Settings.Set("lastModel", selectedModel);
         ContinueButton.IsEnabled = true;
         MainWindow.CloseDialog();
     }
-    
+
+    public async Task<bool> SetModelToCustom(string path)
+    {
+	    string? eula = EmbeddedSpeechLocator.GetEula(path);
+	    if (string.IsNullOrWhiteSpace(eula))
+	    {
+		    await MainWindow.ShowErrorAsync(
+			    "This might not be a valid embedded speech model folder. " +
+			    "If you're sure it is, please report this issue with information about where you got the model.",
+			    "Could not find EULA");
+		    return true;
+	    }
+	    string? version = EmbeddedSpeechLocator.GetVersion(path);
+	    if (string.IsNullOrWhiteSpace(version))
+	    {
+		    await MainWindow.ShowErrorAsync(
+			    "This might not be a valid embedded speech model folder. " +
+			    "If you're sure it is, please report this issue with information about where you got the model.",
+			    "Could not find version");
+		    return true;
+	    }
+	    SttManager.Model = new(eula, path, version);
+	    SttManager.Kind = Kind;
+	    SttManager.ResetRecognizers();
+	    return false;
+    }
+
     #region Model download links
 
-    protected override Dictionary<string, DownloadableModel> Models => new()
+    public override Dictionary<string, DownloadableModel> Models => new()
     {
         ["English (download)"] = new("speechmodel.en-US.cpu.9.0.54436607",
             "https://ms-vscode.gallery.vsassets.io/_apis/public/gallery/publisher/ms-vscode/extension/vscode-speech/0.16.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"),

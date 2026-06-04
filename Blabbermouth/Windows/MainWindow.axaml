@@ -9,6 +9,7 @@
         Width="450" Height="550"
         MinWidth="450" MinHeight="370"
         x:Class="Blabbermouth.Windows.MainWindow"
+        Closing="Window_OnClosing"
         Loaded="WindowLoaded"
         Title="Blabbermouth"
         x:DataType="windows:MainWindow">

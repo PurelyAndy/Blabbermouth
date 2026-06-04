@@ -47,19 +47,75 @@ public partial class MainWindow : Window
         }
         _embeddedModelSelector.UpdateModels();
 
+        PhraseList.ImportPhrases(Settings.Get<string>("lastPhrases") ?? "[]");
+        
+        string lastModel = Settings.Get<string>("lastModel") ?? "";
+        bool lastModelWasCustom = Settings.Get<bool>("lastModelWasCustom");
+        
         switch (SttManager.Kind)
         {
             case SttKind.Embedded:
                 EmbeddedMenuOption.IsChecked = true;
-                await ShowEmbeddedModelDialogAsync();
+                if (lastModelWasCustom)
+                {
+                    await _embeddedModelSelector.SetModelToCustom(lastModel);
+                }
+                else if (SttManager.SpeechModels.TryGetValue(lastModel, out ModelInformation? existingModel))
+                {
+                    SttManager.Model = existingModel;
+                    SttManager.Kind = SttKind.Embedded;
+                    SttManager.ResetRecognizers();
+                }
+                else if (_embeddedModelSelector.Models.TryGetValue(lastModel, out DownloadableModel? model) && model.IsPresent)
+                {
+                    string eula = EmbeddedSpeechLocator.GetEula(model.DirectoryPath)!;
+                    string version = EmbeddedSpeechLocator.GetVersion(model.DirectoryPath)!;
+                    SttManager.Model = new(eula, model.DirectoryPath, version);
+                    SttManager.Kind = SttKind.Embedded;
+                    SttManager.ResetRecognizers();
+                }
+                else
+                {
+                    await ShowEmbeddedModelDialogAsync();
+                }
                 break;
             case SttKind.Vosk:
                 VoskMenuOption.IsChecked = true;
-                await ShowVoskModelDialogAsync();
+                if (lastModelWasCustom)
+                {
+                    SttManager.Model = new("N/A", lastModel, "N/A");
+                    SttManager.Kind = SttKind.Vosk;
+                    SttManager.ResetRecognizers();
+                }
+                else if (_voskModelSelector.Models.TryGetValue(lastModel, out DownloadableModel? model) && model.IsPresent)
+                {
+                    SttManager.Model = new("N/A", model.DirectoryPath, "N/A");
+                    SttManager.Kind = SttKind.Vosk;
+                    SttManager.ResetRecognizers();
+                }
+                else
+                {
+                    await ShowVoskModelDialogAsync();
+                }
                 break;
             case SttKind.SherpaOnnx:
                 SherpaOnnxMenuOption.IsChecked = true;
-                await ShowSherpaOnnxModelDialogAsync();
+                if (lastModelWasCustom)
+                {
+                    SttManager.Model = new("N/A", lastModel, "N/A");
+                    SttManager.Kind = SttKind.SherpaOnnx;
+                    SttManager.ResetRecognizers();
+                }
+                else if (_sherpaOnnxModelSelector.Models.TryGetValue(lastModel, out DownloadableModel? model) && model.IsPresent)
+                {
+                    SttManager.Model = new("N/A", model.DirectoryPath, "N/A");
+                    SttManager.Kind = SttKind.SherpaOnnx;
+                    SttManager.ResetRecognizers();
+                }
+                else
+                {
+                    await ShowSherpaOnnxModelDialogAsync();
+                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(SttManager.Kind), "Invalid STT kind in settings");
@@ -301,6 +357,12 @@ public partial class MainWindow : Window
     public static void CloseDialog()
     {
         I.DialogNoClickAway.CloseDialogCommand.Execute(null);
+    }
+
+    private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        string json = JsonSerializer.Serialize(PhraseList.Phrases, PhraseListJsonContext.Default.ListPhraseEntry);
+        Settings.Set("lastPhrases", json);
     }
 }
 

@@ -87,6 +87,6 @@ public partial class ModelSelector : UserControl
         ModelSelect.SelectedItem = null;
     }
 
-    protected virtual Dictionary<string, DownloadableModel> Models { get; }
+    public virtual Dictionary<string, DownloadableModel> Models { get; }
 }
 

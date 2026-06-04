@@ -34,6 +34,9 @@ public sealed class VoskModelSelector : ModelSelector
             SttManager.Kind = Kind;
             SttManager.ResetRecognizers();
 
+            Settings.Set("lastModel", CustomModelPathValue);
+            Settings.Set("lastModelWasCustom", true);
+            
             MainWindow.CloseDialog();
             return;
         }
@@ -65,13 +68,14 @@ public sealed class VoskModelSelector : ModelSelector
         SttManager.Kind = Kind;
         SttManager.ResetRecognizers();
 
+        Settings.Set("lastModel", selectedModel);
         ContinueButton.IsEnabled = true;
         MainWindow.CloseDialog();
     }
 
     #region Model download links
 
-    protected override Dictionary<string, DownloadableModel> Models => new()
+    public override Dictionary<string, DownloadableModel> Models => new()
     {
         ["English Small (vosk-model-small-en-us-0.15)"] = new("vosk-model-small-en-us-0.15",
             "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"),

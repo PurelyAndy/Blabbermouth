@@ -32,6 +32,9 @@ public sealed class SherpaOnnxModelSelector : ModelSelector
             SttManager.Kind = Kind;
             SttManager.ResetRecognizers();
 
+            Settings.Set("lastModel", CustomModelPathValue);
+            Settings.Set("lastModelWasCustom", true);
+            
             MainWindow.CloseDialog();
             return;
         }
@@ -63,12 +66,13 @@ public sealed class SherpaOnnxModelSelector : ModelSelector
         SttManager.Kind = Kind;
         SttManager.ResetRecognizers();
 
+        Settings.Set("lastModel", selectedModel);
         ContinueButton.IsEnabled = true;
         MainWindow.CloseDialog();
     }
     
     #region Model download links
-    protected override Dictionary<string, DownloadableModel> Models => new()
+    public override Dictionary<string, DownloadableModel> Models => new()
     {
         ["English (sherpa-onnx-streaming-zipformer-en-kroko-2025-08-06)"] = new("sherpa-onnx-streaming-zipformer-en-kroko-2025-08-06",
             "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-streaming-zipformer-en-kroko-2025-08-06.tar.bz2"),

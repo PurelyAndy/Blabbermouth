@@ -23,7 +23,9 @@ public partial class AudioConfig : UserControl
         SpeakersInputComboBox.Items.Clear();
 
         using var engine = new MiniAudioEngine();
-
+        
+        string lastMic = Settings.Get<string>("micDevice") ?? "";
+        bool setToLastMic = false;
         foreach (DeviceInfo device in engine.CaptureDevices)
         {
             MicInputComboBox.Items.Add(new ComboBoxItem
@@ -31,7 +33,12 @@ public partial class AudioConfig : UserControl
                 Content = device.Name,
                 Tag = device.Id,
             });
-            if (device.IsDefault)
+            if (!string.IsNullOrEmpty(lastMic) && device.Name == lastMic)
+            {
+                MicInputComboBox.SelectedIndex = MicInputComboBox.Items.Count - 1;
+                setToLastMic = true;
+            }
+            if (device.IsDefault && !setToLastMic)
             {
                 MicInputComboBox.SelectedIndex = MicInputComboBox.Items.Count - 1;
             }
@@ -39,6 +46,8 @@ public partial class AudioConfig : UserControl
 
         if (OperatingSystem.IsWindows())
         {
+            string lastSpeaker = Settings.Get<string>("speakerDevice") ?? "";
+            bool setToLastSpeaker = false;
             foreach (DeviceInfo device in engine.PlaybackDevices)
             {
                 SpeakersInputComboBox.Items.Add(new ComboBoxItem
@@ -46,7 +55,12 @@ public partial class AudioConfig : UserControl
                     Content = device.Name,
                     Tag = device.Id,
                 });
-                if (device.IsDefault)
+                if (!string.IsNullOrEmpty(lastSpeaker) && device.Name == lastSpeaker)
+                {
+                    SpeakersInputComboBox.SelectedIndex = SpeakersInputComboBox.Items.Count - 1;
+                    setToLastSpeaker = true;
+                }
+                if (device.IsDefault && !setToLastSpeaker)
                 {
                     SpeakersInputComboBox.SelectedIndex = SpeakersInputComboBox.Items.Count - 1;
                 }
@@ -72,6 +86,9 @@ public partial class AudioConfig : UserControl
         {
             SpeakersInputComboBox.SelectedIndex = 0;
         }
+
+        SttManager.ListenToMic = (MicCheckBox.IsChecked = Settings.Get<bool>("useMic")) ?? false;
+        SttManager.ListenToSpeakers = (SpeakersCheckBox.IsChecked = Settings.Get<bool>("useSpeaker")) ?? false;
     }
 
     private static string? GetSelectedAudioDeviceId(ComboBox comboBox)
@@ -82,29 +99,40 @@ public partial class AudioConfig : UserControl
             _ => null,
         };
     }
+
+    private static string? GetSelectedAudioDeviceName(ComboBox comboBox)
+    {
+        return comboBox.SelectedItem switch
+        {
+            ComboBoxItem item => item.Name,
+            _ => null,
+        };
+    }
     
     private void MicCheckBoxChanged(object? sender, RoutedEventArgs e)
     {
-        SttManager.ListenToMic = MicCheckBox.IsChecked == true;
+        Settings.Set("useMic", SttManager.ListenToMic = MicCheckBox.IsChecked == true);
         if (SttManager.Enabled)
             SttManager.UpdateMicRecognizer();
     }
 
     private void SpeakersCheckBoxChanged(object? sender, RoutedEventArgs e)
     {
-        SttManager.ListenToSpeakers = SpeakersCheckBox.IsChecked == true;
+        Settings.Set("useSpeaker", SttManager.ListenToSpeakers = SpeakersCheckBox.IsChecked == true);
         if (SttManager.Enabled)
             SttManager.UpdateSpeakersRecognizer();
     }
 
     private void MicInputChanged(object? sender, SelectionChangedEventArgs e)
     {   
+        Settings.Set("micDevice", GetSelectedAudioDeviceName(MicInputComboBox) ?? "");
         if (SttManager.Enabled)
             SttManager.UpdateMicRecognizer();
     }
 
     private void SpeakersInputChanged(object? sender, SelectionChangedEventArgs e)
     {   
+        Settings.Set("speakerDevice", GetSelectedAudioDeviceName(SpeakersInputComboBox) ?? "");
         if (SttManager.Enabled)
             SttManager.UpdateSpeakersRecognizer();
     }
