@@ -43,16 +43,8 @@ public static class PiShock
         return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task SerialOperate(int intensity, int ms, ShockerAction op)
+    public static async Task<string> SerialOperate(int intensity, int ms, ShockerAction op)
     {
-        if (SerialPort is not { IsOpen: true })
-        {
-            await DialogHost.Show(new DialogBox(MainWindow.I.Dialog,
-                "Serial port is not open. Please test your connection and try again.",
-                "Error", "OK"), MainWindow.I.Dialog);
-            return;
-        }
-            
         var payload = new SerialPayload
         {
             cmd = "operate",
@@ -65,6 +57,14 @@ public static class PiShock
             },
         };
         string json = JsonSerializer.Serialize(payload, PiShockJsonContext.Default.SerialPayload);
+        
+        if (SerialPort is not { IsOpen: true })
+        {
+            await DialogHost.Show(new DialogBox(MainWindow.I.Dialog,
+                "Serial port is not open. Please test your connection and try again.",
+                "Error", "OK"), MainWindow.I.Dialog);
+            return json;
+        }
         try
         {
             SerialPort.WriteLine(json);
@@ -75,6 +75,8 @@ public static class PiShock
                 $"Failed to send command over serial port:\n{e}",
                 "Serial communication error", "OK"), MainWindow.I.Dialog);
         }
+
+        return json;
     }
 
     public static void ResetSerialPort(string port)

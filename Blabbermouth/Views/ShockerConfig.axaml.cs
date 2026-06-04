@@ -160,7 +160,7 @@ public partial class ShockerConfig : UserControl
             goto cleanup;
         }
 
-        await PiShock.SerialOperate(50, 1000, ShockerAction.Vibrate);
+        string json = await PiShock.SerialOperate(50, 1000, ShockerAction.Vibrate);
         await Task.Delay(1500);
         string response = string.Empty;
         try
@@ -195,7 +195,7 @@ public partial class ShockerConfig : UserControl
             // Ignored - happens when there's nothing left to read? I think?
         }
 
-        if (response.StartsWith("Received JSON:"))
+        if (response.Contains("Received JSON: " + json))
         {
             await MainWindow.ShowErrorAsync(
                 "Test command sent successfully! If your shocker vibrated, everything is working correctly. " +
