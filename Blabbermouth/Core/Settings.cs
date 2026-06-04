@@ -89,5 +89,13 @@ public static class Settings
             Add("shockerId", "");
         if (!Contains("usingSerial"))
             Add("usingSerial", OperatingSystem.IsWindows());
+        if (!Contains("micDevice"))
+            Add("micDevice", "");
+        if (!Contains("speakerDevice"))
+            Add("speakerDevice", "");
+        if (!Contains("speakerDevice"))
+            Add("lastPhrases", "[]");
+        if (!Contains("lastModel"))
+            Add("lastModel", "");
     }
 }

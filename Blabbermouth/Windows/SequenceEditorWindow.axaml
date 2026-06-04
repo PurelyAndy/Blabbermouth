@@ -16,7 +16,7 @@
         <Grid RowDefinitions="Auto * Auto Auto">
             <Panel Grid.Row="0">
                 <Button Content="Test" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Click="TestClicked" />
-                <TextBlock Name="WarningBlock" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="No warnings"/>
+                <TextBlock Name="WarningBlock" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="No warnings" />
                 <Button Content="+" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right" Width="40" Click="AddClicked" />
             </Panel>
             <ListBox Name="OperationList" Grid.Row="1">

@@ -34,14 +34,14 @@
             <Button Grid.Column="5" FontSize="18" FontFamily="Default" Padding="0" Margin="5 0 0 0" Click="WaitForCompletionButtonClicked">
                 <Button.Content>
                     <MultiBinding Converter="{StaticResource PlayPauseOperationToEmojiConverter}">
-                        <Binding Path="WaitForCompletion"/>
-                        <Binding Path="Kind"/>
+                        <Binding Path="WaitForCompletion" />
+                        <Binding Path="Kind" />
                     </MultiBinding>
                 </Button.Content>
                 <ToolTip.Tip>
                     <MultiBinding Converter="{StaticResource WaitForCompletionTooltipConverter}">
-                        <Binding Path="WaitForCompletion"/>
-                        <Binding Path="Kind"/>
+                        <Binding Path="WaitForCompletion" />
+                        <Binding Path="Kind" />
                     </MultiBinding>
                 </ToolTip.Tip>
             </Button>
@@ -49,8 +49,8 @@
         <ContentControl Grid.Row="1" Height="12">
             <ContentControl.IsVisible>
                 <MultiBinding Converter="{StaticResource DoesWaitConverter}">
-                    <Binding Path="WaitForCompletion"/>
-                    <Binding Path="Kind"/>
+                    <Binding Path="WaitForCompletion" />
+                    <Binding Path="Kind" />
                 </MultiBinding>
             </ContentControl.IsVisible>
             <Rectangle VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="2" Fill="#FFA0A0A0" />
