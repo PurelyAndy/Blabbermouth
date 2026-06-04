@@ -100,6 +100,7 @@ public static class SttManager
             && (   words.Contains($" {p.Phrase} ", StringComparison.CurrentCultureIgnoreCase)
                 || words.StartsWith($"{p.Phrase} ", StringComparison.CurrentCultureIgnoreCase)
                 || words.EndsWith($" {p.Phrase}", StringComparison.CurrentCultureIgnoreCase)
+                || words == p.Phrase
                 ));
         string icon = activation == Activation.Microphone ? "🎤" : "🔊";
         string output = $"{icon} {words}\n";
