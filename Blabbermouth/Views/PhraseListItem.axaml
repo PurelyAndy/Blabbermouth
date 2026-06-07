@@ -15,15 +15,15 @@
                 <Button Name="UpButton" Content="↑" FontSize="10" Padding="0" />
                 <Button Name="DownButton" Content="↓" FontSize="10" Padding="0" />
             </StackPanel>
-            <Button Name="RemoveButton" Content="❌" Padding="0" Margin="0 0 5 0" />
+            <Button Name="RemoveButton" Content="❌" Padding="0" Margin="0 0 4 0" />
         </StackPanel>
         <TextBox Grid.Column="1" Padding="4 0 0 0" Name="PhraseTextBox" VerticalContentAlignment="Center" Text="{Binding Phrase, Mode=TwoWay}" HorizontalAlignment="Stretch" KeyDown="PhraseKeyPressed" />
         <StackPanel Grid.Column="2" Orientation="Horizontal">
             <StackPanel Name="SettingsPanel" Orientation="Horizontal">
-                <Button IsVisible="{Binding IsWindows}" Content="{Binding Activation, Converter={StaticResource ActivationEmojiConverter}}" ToolTip.Tip="{Binding Activation}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="5 0 0 0" Click="ActivationButtonClicked" />
-                <Button Content="🛠️" FontSize="18" Padding="0" Margin="5 0 0 0" Click="SequenceButtonClicked" />
+                <Button IsVisible="{Binding IsWindows}" Content="{Binding Activation, Converter={StaticResource ActivationEmojiConverter}}" ToolTip.Tip="{Binding Activation}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Margin="4 0 0 0" Click="ActivationButtonClicked" />
+                <Button Content="🛠️" FontSize="18" Padding="0" Margin="4 0 0 0" Click="SequenceButtonClicked" />
             </StackPanel>
-            <Button Content="⚙️" FontSize="18" Padding="0" Margin="5 0 0 0" Click="SettingsButtonClicked" />
+            <Button Content="⚙️" FontSize="18" Padding="0" Margin="4 0 0 0" Click="SettingsButtonClicked" />
         </StackPanel>
     </Grid>
 </UserControl>

@@ -19,7 +19,7 @@
                     <Button Name="UpButton" Content="↑" FontSize="10" Padding="0" />
                     <Button Name="DownButton" Content="↓" FontSize="10" Padding="0" />
                 </StackPanel>
-                <Button Name="RemoveButton" Content="❌" Padding="0" Margin="0 0 5 0" />
+                <Button Name="RemoveButton" Content="❌" Padding="0" Margin="0 0 4 0" />
             </StackPanel>
             <Button Grid.Column="1" Content="{Binding Kind, Converter={StaticResource OperationEmojiConverter}}" ToolTip.Tip="{Binding Kind}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Click="KindButtonClicked" />
             <StackPanel Grid.Column="2" Name="StrengthGroup" Orientation="Horizontal">
@@ -30,8 +30,8 @@
                 <TextBlock Text="⏱️" FontSize="18" VerticalAlignment="Center" />
                 <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="0.3" Maximum="15" Width="58" Value="{Binding Length, Mode=TwoWay}" />
             </StackPanel>
-            <TextBox Grid.Column="4" Name="PathTextBox" Margin="5 0 0 0" Padding="4 0 0 0" VerticalContentAlignment="Center" Text="{Binding FilePath, Mode=TwoWay}" HorizontalAlignment="Stretch" />
-            <Button Grid.Column="5" FontSize="18" FontFamily="Default" Padding="0" Margin="5 0 0 0" Click="WaitForCompletionButtonClicked">
+            <TextBox Grid.Column="4" Name="PathTextBox" Margin="4 0 0 0" Padding="4 0 0 0" VerticalContentAlignment="Center" Text="{Binding FilePath, Mode=TwoWay}" HorizontalAlignment="Stretch" />
+            <Button Grid.Column="5" FontSize="18" FontFamily="Default" Padding="0" Margin="4 0 0 0" Click="WaitForCompletionButtonClicked">
                 <Button.Content>
                     <MultiBinding Converter="{StaticResource PlayPauseOperationToEmojiConverter}">
                         <Binding Path="WaitForCompletion" />
