@@ -14,7 +14,7 @@
         Title="Blabbermouth"
         x:DataType="windows:MainWindow">
     <Grid>
-        <Grid RowDefinitions="Auto * 70 37 Auto">
+        <Grid RowDefinitions="Auto * 4 70 37 Auto">
             <Menu Grid.Row="0">
                 <MenuItem Header="Phrases" Background="#FF505050" Padding="4 2" BorderThickness="0">
                     <MenuItem Header="Export to File" Padding="0" Click="ExportPhrases" />
@@ -33,9 +33,10 @@
                 <MenuItem Header="About" Background="#FF505050" Padding="4 2" BorderThickness="0" Click="AboutClicked" />
             </Menu>
             <views:PhraseList Name="PhraseList" Grid.Row="1" />
-            <views:SpeechRecognitionMonitor Name="Monitor" Grid.Row="2" />
-            <Button Grid.Row="3" Name="StartStopButton" Content="Start Blabbermouth" FontSize="18" FontWeight="Bold" HorizontalAlignment="Stretch" Margin="0 0 0 5" Click="StartStopButtonClicked" />
-            <Grid Row="4" RowDefinitions="Auto Auto">
+            <GridSplitter Grid.Row="2" />
+            <views:SpeechRecognitionMonitor Name="Monitor" Grid.Row="3" />
+            <Button Grid.Row="4" Name="StartStopButton" Content="Start Blabbermouth" FontSize="18" FontWeight="Bold" HorizontalAlignment="Stretch" Margin="0 0 0 5" Click="StartStopButtonClicked" />
+            <Grid Row="5" RowDefinitions="Auto Auto">
                 <Grid Grid.Row="0" Name="CollapsableGrid" IsVisible="True" ColumnDefinitions="* *">
                     <views:AudioConfig Name="AudioConfig" Grid.Column="0" HorizontalAlignment="Stretch" Margin="5 10 5 5" />
                     <views:ShockerConfig Name="ShockerConfig" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5 10 5 5" />
