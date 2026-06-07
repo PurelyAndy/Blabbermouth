@@ -27,14 +27,18 @@ public partial class MainWindow : Window
     private readonly EmbeddedModelSelector _embeddedModelSelector = new();
     private readonly VoskModelSelector _voskModelSelector = new();
     private readonly SherpaOnnxModelSelector _sherpaOnnxModelSelector = new();
-
+    private Grid? _licensesContent;
+        
     public MainWindow()
     {
         InitializeComponent();
         I = this;
-        
-        if (!Directory.Exists(DownloadableModel.DownloadedModelsFolder)) Directory.CreateDirectory(DownloadableModel.DownloadedModelsFolder);
-        if (!Directory.Exists(DownloadableModel.TempFolder)) Directory.CreateDirectory(DownloadableModel.TempFolder);
+
+        if (!Design.IsDesignMode)
+        {
+            if (!Directory.Exists(DownloadableModel.DownloadedModelsFolder)) Directory.CreateDirectory(DownloadableModel.DownloadedModelsFolder);
+            if (!Directory.Exists(DownloadableModel.TempFolder)) Directory.CreateDirectory(DownloadableModel.TempFolder);
+        }
         
         ShockerConfig.SetUsingSerial(Settings.Get<bool>("usingSerial"));
     }
@@ -276,72 +280,75 @@ public partial class MainWindow : Window
 
     private void ShowLicenses(object? sender, RoutedEventArgs e)
     {
-        Button close = new() { Content = "Close" };
-        close.Click += (_, _) => Dialog.CloseDialogCommand.Execute(null);
-        
-        WrapPanel top = new()
+        if (_licensesContent is null)
         {
-            Orientation = Orientation.Horizontal,
-            HorizontalAlignment = HorizontalAlignment.Center,
-        };
-        StackPanel panel = new() { Margin = new(10) };
-        int i = 0;
-        foreach (KeyValuePair<string, string> keyValuePair in Licenses.LicenseDict)
-        {
-            StackPanel group = new()
+            Button close = new() { Content = "Close" };
+            close.Click += (_, _) => Dialog.CloseDialogCommand.Execute(null);
+            
+            WrapPanel top = new()
             {
-                Background = new SolidColorBrush(Color.FromArgb(
-                    (byte)(255 * (i++ % 2 == 0 ? 0.1 : 0.2)), 255, 255, 255)),
-                Margin = new(0, 0, 0, 20),
-            };
-            TextBlock name = new()
-            {
-                Text = keyValuePair.Key,
-                FontWeight = FontWeight.Bold,
-                FontSize = 16,
+                Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
-            TextBlock license = new()
+            StackPanel panel = new() { Margin = new(10) };
+            int i = 0;
+            foreach (KeyValuePair<string, string> keyValuePair in Licenses.LicenseDict)
             {
-                Text = keyValuePair.Value,
-                TextWrapping = TextWrapping.Wrap,
-                FontSize = 10,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-            };
-            group.Children.Add(name);
-            group.Children.Add(license);
-            panel.Children.Add(group);
-            Button scrollToButton = new()
+                StackPanel group = new()
+                {
+                    Background = new SolidColorBrush(Color.FromArgb(
+                        (byte)(255 * (i++ % 2 == 0 ? 0.1 : 0.2)), 255, 255, 255)),
+                    Margin = new(0, 0, 0, 20),
+                };
+                TextBlock name = new()
+                {
+                    Text = keyValuePair.Key,
+                    FontWeight = FontWeight.Bold,
+                    FontSize = 16,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                };
+                TextBlock license = new()
+                {
+                    Text = keyValuePair.Value,
+                    TextWrapping = TextWrapping.Wrap,
+                    FontSize = 10,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                };
+                group.Children.Add(name);
+                group.Children.Add(license);
+                panel.Children.Add(group);
+                Button scrollToButton = new()
+                {
+                    Content = keyValuePair.Key,
+                    FontSize = 10,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new(1),
+                };
+                scrollToButton.Click += (_, _) =>
+                {
+                    group.BringIntoView();
+                };
+                top.Children.Add(scrollToButton);
+            }
+            ScrollViewer scroll = new()
             {
-                Content = keyValuePair.Key,
-                FontSize = 10,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new(1),
+                Content = panel,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                MaxHeight = 320,
+                VerticalAlignment = VerticalAlignment.Stretch,
             };
-            scrollToButton.Click += (_, _) =>
-            {
-                group.BringIntoView();
-            };
-            top.Children.Add(scrollToButton);
+            _licensesContent = new();
+            _licensesContent.RowDefinitions.Add(new(GridLength.Auto));
+            _licensesContent.RowDefinitions.Add(new(GridLength.Auto));
+            _licensesContent.RowDefinitions.Add(new(GridLength.Auto));
+            _licensesContent.Children.Add(top);
+            _licensesContent.Children.Add(scroll);
+            _licensesContent.Children.Add(close);
+            Grid.SetRow(top, 0);
+            Grid.SetRow(scroll, 1);
+            Grid.SetRow(close, 2);
         }
-        ScrollViewer scroll = new()
-        {
-            Content = panel,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-            MaxHeight = 320,
-            VerticalAlignment = VerticalAlignment.Stretch,
-        };
-        Grid content = new();
-        content.RowDefinitions.Add(new(GridLength.Auto));
-        content.RowDefinitions.Add(new(GridLength.Auto));
-        content.RowDefinitions.Add(new(GridLength.Auto));
-        content.Children.Add(top);
-        content.Children.Add(scroll);
-        content.Children.Add(close);
-        Grid.SetRow(top, 0);
-        Grid.SetRow(scroll, 1);
-        Grid.SetRow(close, 2);
-        DialogHost.Show(content, Dialog);
+        DialogHost.Show(_licensesContent, Dialog);
     }
 
     private async void AboutClicked(object? sender, RoutedEventArgs e)
