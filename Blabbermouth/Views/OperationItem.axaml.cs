@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Blabbermouth.Data;
+using Blabbermouth.Util;
 
 namespace Blabbermouth.Views;
 
@@ -28,6 +29,14 @@ public partial class OperationItem : UserControl
     {
         if (DataContext is not Operation op) return;
         op.Kind = (OperationKind)(((int)op.Kind + 1) % Enum.GetValues<OperationKind>().Length);
+        UpdateVisibility();
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void KindButtonRightClicked(object? sender, ContextRequestedEventArgs e)
+    {
+        if (DataContext is not Operation op) return;
+        op.Kind = (OperationKind)(((int)op.Kind - 1).Mod(Enum.GetValues<OperationKind>().Length));
         UpdateVisibility();
         Changed?.Invoke(this, EventArgs.Empty);
     }

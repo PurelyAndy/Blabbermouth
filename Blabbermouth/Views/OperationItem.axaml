@@ -21,7 +21,7 @@
                 </StackPanel>
                 <Button Name="RemoveButton" Content="❌" Padding="0" Margin="0 0 4 0" />
             </StackPanel>
-            <Button Grid.Column="1" Content="{Binding Kind, Converter={StaticResource OperationEmojiConverter}}" ToolTip.Tip="{Binding Kind}" Padding="0" FontSize="18" VerticalAlignment="Stretch" Click="KindButtonClicked" />
+            <Button Grid.Column="1" Content="{Binding Kind, Converter={StaticResource OperationEmojiConverter}}" ToolTip.Tip="{Binding Kind}" Padding="0" FontSize="18" VerticalAlignment="Stretch" ContextRequested="KindButtonRightClicked" Click="KindButtonClicked" />
             <StackPanel Grid.Column="2" Name="StrengthGroup" Orientation="Horizontal">
                 <TextBlock Text="💪" FontSize="18" VerticalAlignment="Center" />
                 <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="1" Maximum="100" Width="55" Value="{Binding Strength, Mode=TwoWay}" />

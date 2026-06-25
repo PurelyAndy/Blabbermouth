@@ -19,4 +19,9 @@ public static class Extensions
             .Replace("wait", "waited")
             .Replace("Wait", "Waited");
     }
+    
+    public static int Mod(this int x, int m)
+    {
+        return (x % m + m) % m;
+    }
 }
