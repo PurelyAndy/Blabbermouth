@@ -36,6 +36,7 @@
                 </MenuItem>
                 <MenuItem Header="Licenses" Background="#FF505050" Padding="4 2" BorderThickness="0" Click="ShowLicenses" />
                 <MenuItem Header="About" Background="#FF505050" Padding="4 2" BorderThickness="0" Click="AboutClicked" />
+                <MenuItem Name="UpdateMenuItem" Header="Update" Background="#FF808050" IsVisible="False" Click="UpdateClicked" />
             </Menu>
             <views:PhraseList Name="PhraseList" Grid.Row="1" />
             <GridSplitter Grid.Row="2" />

@@ -128,6 +128,8 @@ public partial class MainWindow : Window
             default:
                 throw new ArgumentOutOfRangeException(nameof(SttManager.Kind), "Invalid STT kind in settings");
         }
+
+        UpdateMenuItem.IsVisible = await UpdateChecker.ShowUpdateNotificationIfAvailable(Dialog);
     }
 
     private async Task ShowModelDialogAsync(ModelSelector selectorControl)
@@ -389,6 +391,11 @@ public partial class MainWindow : Window
     private void DetectBeforeDoneTalkingClicked(object? sender, RoutedEventArgs e)
     {
         SttManager.DetectBeforeDoneTalking = Settings.Set("detectBeforeDoneTalking", DetectBeforeDoneTalkingMenuOption.IsChecked);
+    }
+
+    private async void UpdateClicked(object? sender, RoutedEventArgs e)
+    {
+        await UpdateChecker.OpenLatestVersionPage();
     }
 }
 
