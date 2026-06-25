@@ -79,6 +79,8 @@ public sealed class VoskModelSelector : ModelSelector
     {
         ["English Small (vosk-model-small-en-us-0.15)"] = new("vosk-model-small-en-us-0.15",
             "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"),
+        ["English Medium (vosk-model-en-us-daanzu-20200905)"] = new("vosk-model-en-us-daanzu-20200905",
+            "https://alphacephei.com/vosk/models/vosk-model-en-us-daanzu-20200905.zip"),
         ["English Large (vosk-model-en-us-0.42-gigaspeech)"] = new("vosk-model-en-us-0.42-gigaspeech",
             "https://alphacephei.com/vosk/models/vosk-model-en-us-0.42-gigaspeech.zip"),
 
