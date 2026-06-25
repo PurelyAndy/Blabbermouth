@@ -11,20 +11,22 @@ namespace Blabbermouth.Windows;
 public partial class SequenceEditorWindow : Window
 {
     private readonly OperationSequence _originalOperations;
+    private bool _closing;
+    
     public SequenceEditorWindow()
     {
         InitializeComponent();
         OperationSequence ops = [];
         DataContext = ops;
         OperationList.ItemsSource = ops;
-        _originalOperations = ops;
+        _originalOperations = ops.Clone();
     }
     
     public SequenceEditorWindow(OperationSequence operations) : this()
     {
         DataContext = operations;
         OperationList.ItemsSource = operations;
-        _originalOperations = operations;
+        _originalOperations = operations.Clone();
     }
 
     private void AddClicked(object? sender, RoutedEventArgs e)
@@ -65,29 +67,28 @@ public partial class SequenceEditorWindow : Window
 
     private void DoneClicked(object? sender, RoutedEventArgs e)
     {
+        _closing = true;
         Close(true);
     }
 
     private async void CancelClicked(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is not OperationSequence ops) return;
-        if (!ops.EquivalentTo(_originalOperations))
-        {
-            object? result = await DialogHost.Show(new DialogBox(Dialog, "Are you sure you want to discard your changes?", "Sequence modified", "Yes", "No"), Dialog);
-            if (result is "No")
-                return;
-        }
         Close(false);
     }
 
     private async void OnClosing(object? sender, WindowClosingEventArgs e)
     {
         if (DataContext is not OperationSequence ops) return;
+        if (_closing) return;
         if (!ops.EquivalentTo(_originalOperations))
         {
+            e.Cancel = true;
             object? result = await DialogHost.Show(new DialogBox(Dialog, "Are you sure you want to discard your changes?", "Sequence modified", "Yes", "No"), Dialog);
-            if (result is "No")
-                e.Cancel = true;
+            if (result is "Yes")
+            {
+                _closing = true;
+                Close(false);
+            }
         }
     }
 
