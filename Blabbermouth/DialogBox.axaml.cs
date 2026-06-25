@@ -11,7 +11,7 @@ public partial class DialogBox : UserControl
         InitializeComponent();
         TitleText.Text = title;
         ContentText.Text = message;
-        
+
         foreach (string name in buttons)
         {
             Button button = new()

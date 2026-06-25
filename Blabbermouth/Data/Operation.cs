@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ public partial class Operation : ObservableObject
 
     [JsonConstructor]
     public Operation() { }
-    
+
     public Operation(OperationKind kind, double length, int strength)
     {
         if (kind is not OperationKind.Shock and not OperationKind.Vibration)
@@ -27,7 +26,7 @@ public partial class Operation : ObservableObject
         Length = length;
         Strength = strength;
     }
-    
+
     public Operation(OperationKind kind, string filePath)
     {
         if (kind is not OperationKind.Sound and not OperationKind.Application)
@@ -35,7 +34,7 @@ public partial class Operation : ObservableObject
         Kind = kind;
         FilePath = filePath;
     }
-    
+
     public Operation(OperationKind kind, double length)
     {
         if (kind is not OperationKind.Wait and not OperationKind.Beep)
@@ -106,7 +105,7 @@ public partial class Operation : ObservableObject
                 throw new ArgumentOutOfRangeException(nameof(Kind));
         }
     }
-    
+
     public Operation Clone()
     {
         return Kind switch
@@ -133,7 +132,7 @@ public partial class Operation : ObservableObject
             _ => "???",
         };
     }
-    
+
     public bool EquivalentTo(Operation? other)
     {
         if (other is null || Kind != other.Kind) return false;
@@ -145,7 +144,7 @@ public partial class Operation : ObservableObject
             _ => throw new ArgumentOutOfRangeException(),
         } && WaitForCompletion == other.WaitForCompletion;
     }
-    
+
     public int GetHashCodeForEquivalence()
     {
         return Kind switch

@@ -25,7 +25,7 @@ public static class PiShock
     {
         if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(ShareCode) || string.IsNullOrEmpty(ApiKey))
             return "PiShock not configured";
-        
+
         ApiPayload body = new()
         {
             code = ShareCode,
@@ -36,7 +36,7 @@ public static class PiShock
             username = Username,
             name = "Blabbermouth",
         };
-        
+
         string json = JsonSerializer.Serialize(body, PiShockJsonContext.Default.ApiPayload);
         HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
         using HttpResponseMessage response = await Client.PostAsync("https://ps.pishock.com/PiShock/Operate", content);
@@ -57,7 +57,7 @@ public static class PiShock
             },
         };
         string json = JsonSerializer.Serialize(payload, PiShockJsonContext.Default.SerialPayload);
-        
+
         if (SerialPort is not { IsOpen: true })
         {
             await DialogHost.Show(new DialogBox(MainWindow.I.Dialog,

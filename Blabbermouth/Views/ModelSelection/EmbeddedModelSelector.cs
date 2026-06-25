@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Blabbermouth.Core;
 using Blabbermouth.Data;
@@ -12,7 +11,7 @@ namespace Blabbermouth.Views.ModelSelection;
 public sealed class EmbeddedModelSelector : ModelSelector
 {
 	private const SttKind Kind = SttKind.Embedded;
-	
+
     public EmbeddedModelSelector()
     {
         Configure(
@@ -34,14 +33,14 @@ public sealed class EmbeddedModelSelector : ModelSelector
         {
             if (await SetModelToCustom(CustomModelPathValue))
 	            return;
-            
+
             Settings.Set("lastModel", CustomModelPathValue);
             Settings.Set("lastModelWasCustom", true);
 
             MainWindow.CloseDialog();
             return;
         }
-        
+
         if (SelectedModelName is not { } selectedModel) return;
 
         if (SttManager.SpeechModels.TryGetValue(selectedModel, out ModelInformation? existingModel))
@@ -49,7 +48,7 @@ public sealed class EmbeddedModelSelector : ModelSelector
             SttManager.Model = existingModel;
             SttManager.Kind = Kind;
             SttManager.ResetRecognizers();
-            
+
             Settings.Set("lastModel", selectedModel);
 
             MainWindow.CloseDialog();
@@ -76,19 +75,19 @@ public sealed class EmbeddedModelSelector : ModelSelector
                 return;
             }
         }
-        
+
         string eula2 = EmbeddedSpeechLocator.GetEula(model.DirectoryPath)!;
         string version2 = EmbeddedSpeechLocator.GetVersion(model.DirectoryPath)!;
         SttManager.Model = new(eula2, model.DirectoryPath, version2);
         SttManager.Kind = Kind;
         SttManager.ResetRecognizers();
-        
+
         Settings.Set("lastModel", selectedModel);
         ContinueButton.IsEnabled = true;
         MainWindow.CloseDialog();
     }
 
-    public async Task<bool> SetModelToCustom(string path)
+    public static async Task<bool> SetModelToCustom(string path)
     {
 	    string? eula = EmbeddedSpeechLocator.GetEula(path);
 	    if (string.IsNullOrWhiteSpace(eula))
@@ -169,7 +168,7 @@ public sealed class EmbeddedModelSelector : ModelSelector
 		["中文（香港）/Chinese (Hong Kong) (download)"] = new("speechmodel.zh-HK.cpu.2.1.40100365",
 			"https://ms-vscode.gallery.vsassets.io/_apis/public/gallery/publisher/ms-vscode/extension/vscode-speech-language-pack-zh-hk/0.5.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"),
 		["中文（台湾）/Chinese (Taiwan) (download)"] = new("speechmodel.zh-TW.cpu.2.1.40100365",
-			"https://ms-vscode.gallery.vsassets.io/_apis/public/gallery/publisher/ms-vscode/extension/vscode-speech-language-pack-zh-tw/0.5.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage")
+			"https://ms-vscode.gallery.vsassets.io/_apis/public/gallery/publisher/ms-vscode/extension/vscode-speech-language-pack-zh-tw/0.5.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"),
     };
     #endregion
 }

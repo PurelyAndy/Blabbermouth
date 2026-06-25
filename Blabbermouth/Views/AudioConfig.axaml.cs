@@ -11,7 +11,7 @@ public partial class AudioConfig : UserControl
 {
     public string? SelectedMicDeviceId => GetSelectedAudioDeviceId(MicInputComboBox);
     public string? SelectedSpeakersDeviceId => GetSelectedAudioDeviceId(SpeakersInputComboBox);
-    
+
     public AudioConfig()
     {
         InitializeComponent();
@@ -23,7 +23,7 @@ public partial class AudioConfig : UserControl
         SpeakersInputComboBox.Items.Clear();
 
         using MiniAudioEngine engine = new();
-        
+
         string lastMic = Settings.Get<string>("micDevice") ?? "";
         bool setToLastMic = false;
         foreach (DeviceInfo device in engine.CaptureDevices)
@@ -76,7 +76,7 @@ public partial class AudioConfig : UserControl
                 Tag = null,
             });
         }
-        
+
         if (MicInputComboBox.Items.Count > 0 && MicInputComboBox.SelectedIndex < 0)
         {
             MicInputComboBox.SelectedIndex = 0;
@@ -108,7 +108,7 @@ public partial class AudioConfig : UserControl
             _ => null,
         };
     }
-    
+
     private void MicCheckBoxChanged(object? sender, RoutedEventArgs e)
     {
         Settings.Set("useMic", SttManager.ListenToMic = MicCheckBox.IsChecked == true);

@@ -9,7 +9,7 @@ public class TextSegment
     public readonly IBrush Background;
     public readonly string? Tooltip;
     public int StartIndex;
-    
+
     public TextSegment(string text, IBrush foreground, IBrush background, string? tooltip = null)
     {
         Text = text;

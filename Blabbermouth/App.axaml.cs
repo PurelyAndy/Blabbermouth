@@ -26,7 +26,7 @@ public class App : Application
 
         // async/Task exceptions
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-        
+
         Dispatcher.UIThread.UnhandledException += (_, e) =>
         {
             e.Handled = true;

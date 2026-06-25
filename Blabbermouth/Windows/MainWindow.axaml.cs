@@ -28,7 +28,7 @@ public partial class MainWindow : Window
     private readonly VoskModelSelector _voskModelSelector = new();
     private readonly SherpaOnnxModelSelector _sherpaOnnxModelSelector = new();
     private Grid? _licensesContent;
-        
+
     public MainWindow()
     {
         InitializeComponent();
@@ -39,7 +39,7 @@ public partial class MainWindow : Window
             if (!Directory.Exists(DownloadableModel.DownloadedModelsFolder)) Directory.CreateDirectory(DownloadableModel.DownloadedModelsFolder);
             if (!Directory.Exists(DownloadableModel.TempFolder)) Directory.CreateDirectory(DownloadableModel.TempFolder);
         }
-        
+
         ShockerConfig.SetUsingSerial(Settings.Get<bool>("usingSerial"));
     }
 
@@ -52,21 +52,21 @@ public partial class MainWindow : Window
         _embeddedModelSelector.UpdateModels();
 
         PhraseList.ImportPhrases(Settings.Get<string>("lastPhrases") ?? "[]");
-        
+
         SttManager.AllowMultiplePhrases = AllowMultiplePhrasesMenuOption.IsChecked = Settings.Get<bool>("allowMultiplePhrases");
         SttManager.AllowMultipleOfSamePhrase = AllowMultipleOfSamePhraseMenuOption.IsChecked = Settings.Get<bool>("allowMultipleOfSamePhrase");
         SttManager.DetectBeforeDoneTalking = DetectBeforeDoneTalkingMenuOption.IsChecked = Settings.Get<bool>("detectBeforeDoneTalking");
-        
+
         string lastModel = Settings.Get<string>("lastModel") ?? "";
         bool lastModelWasCustom = Settings.Get<bool>("lastModelWasCustom");
-        
+
         switch (SttManager.Kind)
         {
             case SttKind.Embedded:
                 EmbeddedMenuOption.IsChecked = true;
                 if (lastModelWasCustom)
                 {
-                    await _embeddedModelSelector.SetModelToCustom(lastModel);
+                    await EmbeddedModelSelector.SetModelToCustom(lastModel);
                 }
                 else if (SttManager.SpeechModels.TryGetValue(lastModel, out ModelInformation? existingModel))
                 {
@@ -149,7 +149,7 @@ public partial class MainWindow : Window
     {
         await ShowModelDialogAsync(_sherpaOnnxModelSelector);
     }
-    
+
     private void CollapseButtonClick(object? sender, RoutedEventArgs e)
     {
         CollapsableGrid.IsVisible = !CollapsableGrid.IsVisible;
@@ -200,7 +200,7 @@ public partial class MainWindow : Window
 
     private void SaveCredentials(object? sender, RoutedEventArgs e)
     {
-        Settings.Set<string>("username", ShockerConfig.Username);
+        Settings.Set("username", ShockerConfig.Username);
         Settings.Set("shareCode", ShockerConfig.ShareCode);
         Settings.Set("apiKey", ShockerConfig.ApiKey);
     }
@@ -216,7 +216,7 @@ public partial class MainWindow : Window
     {
         IStorageFile? file = await StorageProvider.SaveFilePickerAsync(new()
         {
-            SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(Settings.Get<string>("lastLocation")),
+            SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(Settings.Get<string>("lastLocation")!),
             FileTypeChoices =
             [
                 new("JSON")
@@ -227,7 +227,7 @@ public partial class MainWindow : Window
         });
 
         if (file == null) return;
-        
+
         Settings.Set("lastLocation", System.IO.Path.GetDirectoryName(file.Path.LocalPath));
         string json = JsonSerializer.Serialize(PhraseList.Phrases, PhraseListJsonContext.Default.ListPhraseEntry);
         await File.WriteAllTextAsync(file.Path.LocalPath, json);
@@ -237,7 +237,7 @@ public partial class MainWindow : Window
     {
         IReadOnlyList<IStorageFile?> files = await StorageProvider.OpenFilePickerAsync(new()
         {
-            SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(Settings.Get<string>("lastLocation")),
+            SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(Settings.Get<string>("lastLocation")!),
             AllowMultiple = false,
             FileTypeFilter =
             [
@@ -249,11 +249,11 @@ public partial class MainWindow : Window
         });
 
         if (files.Count <= 0 || files[0] == null) return;
-        
+
         IStorageFile file = files[0]!;
         Settings.Set("lastLocation", System.IO.Path.GetDirectoryName(file.Path.LocalPath));
         string json = await File.ReadAllTextAsync(file.Path.LocalPath);
-            
+
         try
         {
             PhraseList.ImportPhrases(json);
@@ -288,7 +288,7 @@ public partial class MainWindow : Window
         {
             Button close = new() { Content = "Close" };
             close.Click += (_, _) => Dialog.CloseDialogCommand.Execute(null);
-            
+
             WrapPanel top = new()
             {
                 Orientation = Orientation.Horizontal,
@@ -359,12 +359,12 @@ public partial class MainWindow : Window
     {
         await DialogHost.Show(new AboutView(Dialog), Dialog);
     }
-    
+
     public static async Task ShowErrorAsync(string message, string title)
     {
         await DialogHost.Show(new DialogBox(I.Dialog, message, title, "OK"), I.Dialog);
     }
-    
+
     public static void CloseDialog()
     {
         I.DialogNoClickAway.CloseDialogCommand.Execute(null);

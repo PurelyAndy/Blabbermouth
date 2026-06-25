@@ -1,8 +1,6 @@
 using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Blabbermouth.Data;
 using Blabbermouth.Util;
 
@@ -17,11 +15,11 @@ public partial class OperationItem : UserControl
     public OperationItem()
     {
         InitializeComponent();
-        
+
         UpButton.Click += (_, _) => MoveUp?.Invoke(this, (Operation)DataContext!);
         DownButton.Click += (_, _) => MoveDown?.Invoke(this, (Operation)DataContext!);
         RemoveButton.Click += (_, _) => Remove?.Invoke(this, (Operation)DataContext!);
-        
+
         DataContextChanged += (_, _) => UpdateVisibility();
     }
 

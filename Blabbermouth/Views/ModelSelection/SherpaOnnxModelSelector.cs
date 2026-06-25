@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Blabbermouth.Core;
 using Blabbermouth.Data;
@@ -12,7 +11,7 @@ namespace Blabbermouth.Views.ModelSelection;
 public sealed class SherpaOnnxModelSelector : ModelSelector
 {
     private const SttKind Kind = SttKind.SherpaOnnx;
-    
+
     public SherpaOnnxModelSelector()
     {
         Configure(
@@ -34,7 +33,7 @@ public sealed class SherpaOnnxModelSelector : ModelSelector
 
             Settings.Set("lastModel", CustomModelPathValue);
             Settings.Set("lastModelWasCustom", true);
-            
+
             MainWindow.CloseDialog();
             return;
         }
@@ -70,7 +69,7 @@ public sealed class SherpaOnnxModelSelector : ModelSelector
         ContinueButton.IsEnabled = true;
         MainWindow.CloseDialog();
     }
-    
+
     #region Model download links
     public override Dictionary<string, DownloadableModel> Models => new()
     {

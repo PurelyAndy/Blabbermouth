@@ -2,14 +2,13 @@
 using System.IO;
 using System.Linq;
 using Blabbermouth.Data;
-using Blabbermouth.Util;
 
 namespace Blabbermouth.Core;
 
 public static class Settings
 {
     private const string SettingsPath = "settings.csv";
-    
+
     public static T Set<T>(string setting, T value)
     {
         string[] lines = File.ReadAllLines(SettingsPath);
@@ -27,21 +26,18 @@ public static class Settings
         string[] lines = File.ReadAllLines(SettingsPath);
         foreach (string line in lines)
         {
-            if (line.StartsWith(setting + ","))
+            if (!line.StartsWith(setting + ",")) continue;
+
+            string[] split = line.Split(',', 2);
+            Type type = typeof(T);
+
+            if (string.IsNullOrEmpty(split[1]))
             {
-                string[] split = line.Split(',', 2);
-                Type type = typeof(T);
-                
-                if (string.IsNullOrEmpty(split[1]))
-                {
-                    return type == typeof(string) ? (T)(object)"": default!;
-                }
-                else
-                {
-                    object value = type.IsEnum ? Enum.Parse(type, split[1]) : Convert.ChangeType(split[1], type);
-                    return (T)value;
-                }
+                return type == typeof(string) ? (T)(object)"": default!;
             }
+
+            object value = type.IsEnum ? Enum.Parse(type, split[1]) : Convert.ChangeType(split[1], type);
+            return (T)value;
         }
 
         return default;
@@ -76,7 +72,7 @@ public static class Settings
                 }
             }
         }
-        
+
         if (!Has("version"))                    Add("version",                      "1");
         if (!Has("username"))                   Add("username",                     "");
         if (!Has("shareCode"))                  Add("shareCode",                    "");

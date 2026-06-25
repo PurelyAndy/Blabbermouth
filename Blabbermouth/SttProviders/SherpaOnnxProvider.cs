@@ -15,7 +15,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
     private OnlineStream? _stream;
     private MiniAudioEngine? _engine;
     private AudioCaptureDevice? _capture;
-    
+
     public event Action<string, bool>? Recognized;
 
     private readonly string _modelPath;
@@ -100,7 +100,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
             if (_stream == null || _recognizer == null) return;
 
             _stream.AcceptWaveform(22050, samples.ToArray());
-            
+
             while (_recognizer.IsReady(_stream))
             {
                 _recognizer.Decode(_stream);
@@ -110,7 +110,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
             {
                 OnlineRecognizerResult? result = _recognizer.GetResult(_stream);
                 string text = result.Text;
-                
+
                 if (!string.IsNullOrWhiteSpace(text) && text != ".")
                 {
                     Recognized?.Invoke(text.ToLowerInvariant(), false);
@@ -122,7 +122,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
             {
                 OnlineRecognizerResult? result = _recognizer.GetResult(_stream);
                 string text = result.Text;
-                
+
                 if (!string.IsNullOrWhiteSpace(text) && text != ".")
                 {
                     Recognized?.Invoke(text.ToLowerInvariant(), true);

@@ -25,8 +25,8 @@ public static class SttManager
     public static bool AllowMultipleOfSamePhrase;
     private static ISpeechRecognizerProvider? _micRecognizer;
     private static ISpeechRecognizerProvider? _speakersRecognizer;
-    private static readonly Channel<OperationSequence> _operationQueue = Channel.CreateUnbounded<OperationSequence>();
-    
+    private static readonly Channel<OperationSequence> OperationQueue = Channel.CreateUnbounded<OperationSequence>();
+
     public static SttKind Kind
     {
         get;
@@ -38,10 +38,10 @@ public static class SttManager
         Kind = Settings.Get<SttKind>("mode");
         _ = ProcessOperationQueueAsync();
     }
-    
+
     private static async Task ProcessOperationQueueAsync()
     {
-        await foreach (OperationSequence operations in _operationQueue.Reader.ReadAllAsync())
+        await foreach (OperationSequence operations in OperationQueue.Reader.ReadAllAsync())
         {
             await operations.Perform();
         }
@@ -71,11 +71,11 @@ public static class SttManager
             _micRecognizer = CreateProvider();
             if (_micRecognizer != null)
             {
-                _micRecognizer.Recognized += async (words, partial) =>
+                _micRecognizer.Recognized += (words, partial) =>
                 {
-                    await Dispatcher.UIThread.InvokeAsync(async () =>
+                    Dispatcher.UIThread.Invoke(() =>
                     {
-                        await ProcessRecognizedSpeech(words, Activation.Microphone, partial, Brushes.LightGreen);
+                        ProcessRecognizedSpeech(words, Activation.Microphone, partial, Brushes.LightGreen);
                     });
                 };
             }
@@ -96,11 +96,11 @@ public static class SttManager
             _speakersRecognizer = CreateProvider();
             if (_speakersRecognizer != null)
             {
-                _speakersRecognizer.Recognized += async (words, partial) =>
+                _speakersRecognizer.Recognized += (words, partial) =>
                 {
-                    await Dispatcher.UIThread.InvokeAsync(async () =>
+                    Dispatcher.UIThread.Invoke(() =>
                     {
-                        await ProcessRecognizedSpeech(words, Activation.Speakers, partial, Brushes.LightSkyBlue);
+                        ProcessRecognizedSpeech(words, Activation.Speakers, partial, Brushes.LightSkyBlue);
                     });
                 };
             }
@@ -108,10 +108,10 @@ public static class SttManager
 
         _speakersRecognizer?.Start(deviceId, isLoopback: true);
     }
-    
+
     private static readonly Dictionary<PhraseEntry, int> SeenPhrasesMic = new();
     private static readonly Dictionary<PhraseEntry, int> SeenPhrasesSpeakers = new();
-    private static async Task ProcessRecognizedSpeech(string words, Activation activation, bool partial, ISolidColorBrush defaultBrush)
+    private static void ProcessRecognizedSpeech(string words, Activation activation, bool partial, ISolidColorBrush defaultBrush)
     {
         List<PhraseEntry> phrasesToPerform = [];
         List<PhraseEntry> foundPhrases = [];
@@ -127,7 +127,7 @@ public static class SttManager
                 foundPhrases.Add(foundPhrase);
             }
         }
-        
+
         string icon = activation == Activation.Microphone ? "🎤" : "🔊";
         string output = $"{icon} {words}\n";
 
@@ -140,7 +140,7 @@ public static class SttManager
         {
             SolidColorBrush background = new(defaultBrush.Color, 0.2);
             List<(int Start, int Length, PhraseEntry Phrase)> matches = [];
-            
+
             foreach (PhraseEntry p in foundPhrases)
             {
                 string midTarget = $" {p.Phrase} ";
@@ -158,12 +158,12 @@ public static class SttManager
                     matches.Add((endIndex + 1, p.Phrase.Length, p));
                 }
             }
-            
+
             var orderedMatches = matches
                 .OrderBy(m => m.Start)
                 .ThenByDescending(m => m.Length)
                 .ToList();
-            
+
             int currentIdx = 0;
             foreach ((int start, int length, PhraseEntry phrase) in orderedMatches)
             {
@@ -171,36 +171,36 @@ public static class SttManager
                 {
                     continue;
                 }
-            
+
                 if (start > currentIdx)
                 {
                     addedSegments.Add(new(output[currentIdx..start], defaultBrush, Brushes.Transparent));
                 }
-            
+
                 string phraseText = output[start..(start + length)];
                 addedSegments.Add(new(phraseText, Brushes.OrangeRed, background, phrase.Operations.ToString().ToPastTense()));
-            
+
                 currentIdx = start + length;
 
                 if (AllowMultipleOfSamePhrase || !phrasesToPerform.Contains(phrase))
                     phrasesToPerform.Add(phrase);
             }
-            
+
             if (currentIdx < output.Length)
             {
                 addedSegments.Add(new(output[currentIdx..], defaultBrush, Brushes.Transparent));
             }
         }
-        
+
         MainWindow.I.Monitor.AddSegments(activation, partial, addedSegments);
-        
-        Dictionary<PhraseEntry, int> seenPhrases = 
-            activation == Activation.Microphone 
-                ? SeenPhrasesMic 
+
+        Dictionary<PhraseEntry, int> seenPhrases =
+            activation == Activation.Microphone
+                ? SeenPhrasesMic
                 : SeenPhrasesSpeakers;
-        
+
         List<OperationSequence> finalOperations = [];
-        
+
         foreach (PhraseEntry phrase in phrasesToPerform)
         {
             seenPhrases.TryGetValue(phrase, out int count);
@@ -226,16 +226,16 @@ public static class SttManager
 
         foreach (OperationSequence operations in finalOperations)
         {
-            _operationQueue.Writer.TryWrite(operations);
+            OperationQueue.Writer.TryWrite(operations);
         }
 
         return;
-        
-        bool PhraseFits(PhraseEntry p) => 
-            (p.Activation & activation) != 0 
-            && (words.Contains($" {p.Phrase} ", StringComparison.CurrentCultureIgnoreCase) 
-             || words.StartsWith($"{p.Phrase} ", StringComparison.CurrentCultureIgnoreCase) 
-             || words.EndsWith($" {p.Phrase}", StringComparison.CurrentCultureIgnoreCase) 
+
+        bool PhraseFits(PhraseEntry p) =>
+            (p.Activation & activation) != 0
+            && (words.Contains($" {p.Phrase} ", StringComparison.CurrentCultureIgnoreCase)
+             || words.StartsWith($"{p.Phrase} ", StringComparison.CurrentCultureIgnoreCase)
+             || words.EndsWith($" {p.Phrase}", StringComparison.CurrentCultureIgnoreCase)
              || words == p.Phrase);
     }
 

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Blabbermouth.Core;
 using Blabbermouth.Data;
@@ -36,7 +34,7 @@ public sealed class VoskModelSelector : ModelSelector
 
             Settings.Set("lastModel", CustomModelPathValue);
             Settings.Set("lastModelWasCustom", true);
-            
+
             MainWindow.CloseDialog();
             return;
         }

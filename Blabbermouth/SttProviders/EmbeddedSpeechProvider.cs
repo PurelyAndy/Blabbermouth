@@ -24,7 +24,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
     private AudioConfig? _audioConfig;
     private MiniAudioEngine? _engine;
     private AudioCaptureDevice? _capture;
-    
+
     public event Action<string, bool>? Recognized;
 
     public EmbeddedSpeechProvider(ModelInformation model)
@@ -42,15 +42,15 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
     public void Start(string deviceId, bool isLoopback)
     {
         Stop();
-        
+
         _pushStream = AudioInputStream.CreatePushStream(AudioStreamFormat.GetWaveFormatPCM(16000, 16, 1));
         _audioConfig = AudioConfig.FromStreamInput(_pushStream);
         _recognizer = new(_speechConfig, _audioConfig);
-        
+
         _recognizer.Recognized += (_, e) =>
         {
             if (e.Result.Reason != ResultReason.RecognizedSpeech) return;
-            
+
             IEnumerable<LexicalResult> results = Best(e.Result);
             string? words = results.FirstOrDefault()?.Lexical?.ToLower();
             if (!string.IsNullOrWhiteSpace(words))
@@ -60,11 +60,11 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
         {
             if (!SttManager.DetectBeforeDoneTalking) return;
             if (e.Result.Reason != ResultReason.RecognizingSpeech) return;
-            
+
             if (!string.IsNullOrWhiteSpace(e.Result.Text))
                 Recognized?.Invoke(RawLexical(e.Result.Text), true);
         };
-        
+
         _ = _recognizer.StartContinuousRecognitionAsync();
 
         _engine = new();
@@ -85,8 +85,8 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
             DeviceInfo device = _engine.CaptureDevices.FirstOrDefault(d => d.Id.ToString() == deviceId);
             _capture = _engine.InitializeCaptureDevice(device, format);
         }
-        
-        _capture.OnAudioProcessed += (samples, cap) =>
+
+        _capture.OnAudioProcessed += (samples, _) =>
         {
             byte[] bytes = new byte[samples.Length * 2];
             for (int i = 0; i < samples.Length; i++)
@@ -115,7 +115,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
 
         _pushStream?.Dispose();
         _pushStream = null;
-        
+
         _recognizer?.Dispose();
         _recognizer = null;
     }
@@ -124,7 +124,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
     {
         Stop();
     }
-    
+
     private static List<LexicalResult> Best(SpeechRecognitionResult result)
     {
         string? json =
@@ -139,7 +139,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
                ?? [];
     }
 
-    private static HashSet<string> KnownContractions =
+    private static readonly HashSet<string> KnownContractions =
     [
         "it's", "that's", "what's", "who's", "he's", "she's", "where's", "there's", "here's", "how's",
         "i'll", "you'll", "he'll", "she'll", "it'll", "we'll", "they'll", "that'll", "what'll", "who'll",
@@ -165,7 +165,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
         });
         return initial;
     }
-    
+
     [GeneratedRegex(@"-?((?:\d{4})|(?:\d{1,3}(?:,\d{3})+)|\d+)?(?:\.\d+)?")]
     private static partial Regex NumbersRegex();
 

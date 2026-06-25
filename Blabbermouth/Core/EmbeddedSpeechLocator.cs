@@ -19,31 +19,31 @@ public static class EmbeddedSpeechLocator
                     "WindowsApps");
                 if (!Directory.Exists(windowsAppsFolder))
                     return;
-            
+
                 List<string> speechFolders = Directory.EnumerateDirectories(windowsAppsFolder)
                     .Where(d => new DirectoryInfo(d).Name.StartsWith("MicrosoftWindows.Speech."))
                     .ToList();
-    
+
                 if (speechFolders.Count > 0)
                 {
                     foreach (string folder in speechFolders)
                     {
                         string[] parts = new DirectoryInfo(folder).Name.Split('.');
                         if (parts.Length < 3) continue;
-                    
+
                         string language = parts[2] + " (source: Windows)";
                         UseIfComprehensible(folder, language);
                     }
                 }
             }
         }
-        catch (Exception ignored)
+        catch
         {
             // normal people haven't `takeown`'d their WindowsApps folder. it's not a big deal but it makes me sad.
         }
-        
+
         List<string> vsCodeSpeechFolders = [];
-        
+
         string vsCodeExtensionsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".vscode",
             "extensions");
@@ -53,7 +53,7 @@ public static class EmbeddedSpeechLocator
                 .Where(d => new DirectoryInfo(d).Name.StartsWith("ms-vscode.vscode-speech-"))
                 .ToList());
         }
-            
+
         string insidersPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".vscode-insiders",
             "extensions");
@@ -63,17 +63,17 @@ public static class EmbeddedSpeechLocator
                 .Where(d => new DirectoryInfo(d).Name.StartsWith("ms-vscode.vscode-speech-"))
                 .ToList());
         }
-        
+
         foreach (string folder in vsCodeSpeechFolders)
         {
             string modelPath = Path.Combine(folder, "assets", "stt");
             if (!Directory.Exists(modelPath)) continue;
-            
+
             foreach (string subfolder in Directory.GetDirectories(modelPath))
             {
                 string[] parts = new DirectoryInfo(subfolder).Name.Split('.');
                 if (parts.Length < 4) continue;
-                    
+
                 string language = parts[1] + " (source: VS Code)";
                 UseIfComprehensible(subfolder, language);
             }
@@ -101,7 +101,7 @@ public static class EmbeddedSpeechLocator
     public static string? GetEula(string folder)
     {
         const int maxBytesToRead = 1000;
-        
+
         string eulaContainingFile = Path.Combine(folder, "joint.onnx");
         if (!File.Exists(eulaContainingFile))
         {
@@ -121,10 +121,9 @@ public static class EmbeddedSpeechLocator
         const string eulaEndMarker = "others to use.";
 
         int eulaEndIndex = text.IndexOf(eulaEndMarker, StringComparison.Ordinal);
-        if (eulaEndIndex == -1)
-            return null;
-
-        return text[..(eulaEndIndex + eulaEndMarker.Length)];
+        return eulaEndIndex == -1
+            ? null
+            : text[..(eulaEndIndex + eulaEndMarker.Length)];
     }
 
     public static string? GetVersion(string folder)

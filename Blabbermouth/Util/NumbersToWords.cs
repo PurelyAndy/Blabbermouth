@@ -9,7 +9,7 @@ public static class NumbersToWords
     {
         Perform("1234567890", "1001", "19", "20", "0", "1000000");
     }
-    
+
     public static string Perform(params string[] numbers)
     {
         return string.Join(" ", numbers.Select(n =>
@@ -34,95 +34,94 @@ public static class NumbersToWords
 
             for (int i = 0; i < groups.Length; i++)
             {
-                string group = groups[i];
-                if (long.TryParse(group, out long num))
+                string? group = groups[i];
+                if (!long.TryParse(group, out long num)) continue;
+
+                string text = "";
+                if (num == 0)
                 {
-                    string text = "";
-                    if (num == 0)
+                    text = "zero ";
+                }
+                else
+                {
+                    if (num >= 100)
                     {
-                        text = "zero ";
-                    }
-                    else
-                    {
-                        if (num >= 100)
+                        text += (num / 100) switch
                         {
-                            text += (num / 100) switch
-                            {
-                                1 => "one ",
-                                2 => "two ",
-                                3 => "three ",
-                                4 => "four ",
-                                5 => "five ",
-                                6 => "six ",
-                                7 => "seven ",
-                                8 => "eight ",
-                                9 => "nine ",
-                                _ => throw new(),
-                            };
-                            text += "hundred ";
-                            num %= 100;
-                        }
-    
-                        if (num >= 20)
-                        {
-                            text += (num / 10) switch
-                            {
-                                2 => "twenty ",
-                                3 => "thirty ",
-                                4 => "forty ",
-                                5 => "fifty ",
-                                6 => "sixty ",
-                                7 => "seventy ",
-                                8 => "eighty ",
-                                9 => "ninety ",
-                                _ => throw new(),
-                            };
-                            num %= 10;
-                        }
-                        else if (num >= 10)
-                        {
-                            text += num switch
-                            {
-                                10 => "ten ",
-                                11 => "eleven ",
-                                12 => "twelve ",
-                                13 => "thirteen ",
-                                14 => "fourteen ",
-                                15 => "fifteen ",
-                                16 => "sixteen ",
-                                17 => "seventeen ",
-                                18 => "eighteen ",
-                                19 => "nineteen ",
-                                _ => throw new(),
-                            };
-                            num = 0;
-                        }
-    
-                        if (num > 0)
-                        {
-                            text += num switch
-                            {
-                                1 => "one ",
-                                2 => "two ",
-                                3 => "three ",
-                                4 => "four ",
-                                5 => "five ",
-                                6 => "six ",
-                                7 => "seven ",
-                                8 => "eight ",
-                                9 => "nine ",
-                                _ => throw new(),
-                            };
-                        }
-                        
-                        if (text != "")
-                        {
-                            text += groupNames[groups.Length - 1 - i] + " ";
-                        }
+                            1 => "one ",
+                            2 => "two ",
+                            3 => "three ",
+                            4 => "four ",
+                            5 => "five ",
+                            6 => "six ",
+                            7 => "seven ",
+                            8 => "eight ",
+                            9 => "nine ",
+                            _ => throw new(),
+                        };
+                        text += "hundred ";
+                        num %= 100;
                     }
 
-                    result += text;
+                    if (num >= 20)
+                    {
+                        text += (num / 10) switch
+                        {
+                            2 => "twenty ",
+                            3 => "thirty ",
+                            4 => "forty ",
+                            5 => "fifty ",
+                            6 => "sixty ",
+                            7 => "seventy ",
+                            8 => "eighty ",
+                            9 => "ninety ",
+                            _ => throw new(),
+                        };
+                        num %= 10;
+                    }
+                    else if (num >= 10)
+                    {
+                        text += num switch
+                        {
+                            10 => "ten ",
+                            11 => "eleven ",
+                            12 => "twelve ",
+                            13 => "thirteen ",
+                            14 => "fourteen ",
+                            15 => "fifteen ",
+                            16 => "sixteen ",
+                            17 => "seventeen ",
+                            18 => "eighteen ",
+                            19 => "nineteen ",
+                            _ => throw new(),
+                        };
+                        num = 0;
+                    }
+
+                    if (num > 0)
+                    {
+                        text += num switch
+                        {
+                            1 => "one ",
+                            2 => "two ",
+                            3 => "three ",
+                            4 => "four ",
+                            5 => "five ",
+                            6 => "six ",
+                            7 => "seven ",
+                            8 => "eight ",
+                            9 => "nine ",
+                            _ => throw new(),
+                        };
+                    }
+
+                    if (text != "")
+                    {
+                        text += groupNames[groups.Length - 1 - i] + " ";
+                    }
                 }
+
+                result += text;
             }
 
             return (isNegative ? "negative " : "") + result.Trim();

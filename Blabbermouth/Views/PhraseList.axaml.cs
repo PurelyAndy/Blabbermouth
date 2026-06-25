@@ -21,7 +21,7 @@ public partial class PhraseList : UserControl
         .Select(x => x.Phrase)
         .Where(p => !string.IsNullOrWhiteSpace(p))
         .ToList();
-    
+
     public PhraseList()
     {
         InitializeComponent();
@@ -84,9 +84,9 @@ public partial class PhraseList : UserControl
 
     public void ImportPhrases(string json)
     {
-        List<Data.PhraseEntry>? importedPhrases = JsonSerializer.Deserialize<List<Data.PhraseEntry>>(json, PhraseListJsonContext.Default.ListPhraseEntry);
+        var importedPhrases = JsonSerializer.Deserialize<List<Data.PhraseEntry>>(json, PhraseListJsonContext.Default.ListPhraseEntry);
         if (importedPhrases == null) return;
-        
+
         _phrases.Clear();
         foreach (Data.PhraseEntry entry in importedPhrases)
         {

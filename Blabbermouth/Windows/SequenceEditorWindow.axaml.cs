@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -12,7 +11,7 @@ public partial class SequenceEditorWindow : Window
 {
     private readonly OperationSequence _originalOperations;
     private bool _closing;
-    
+
     public SequenceEditorWindow()
     {
         InitializeComponent();
@@ -21,7 +20,7 @@ public partial class SequenceEditorWindow : Window
         OperationList.ItemsSource = ops;
         _originalOperations = ops.Clone();
     }
-    
+
     public SequenceEditorWindow(OperationSequence operations) : this()
     {
         DataContext = operations;
@@ -53,7 +52,7 @@ public partial class SequenceEditorWindow : Window
         }
         UpdateWarningText();
     }
-    
+
     private void MoveOperationDown(object? sender, Operation e)
     {
         if (DataContext is not OperationSequence ops) return;
@@ -71,7 +70,7 @@ public partial class SequenceEditorWindow : Window
         Close(true);
     }
 
-    private async void CancelClicked(object? sender, RoutedEventArgs e)
+    private void CancelClicked(object? sender, RoutedEventArgs e)
     {
         Close(false);
     }
@@ -80,16 +79,15 @@ public partial class SequenceEditorWindow : Window
     {
         if (DataContext is not OperationSequence ops) return;
         if (_closing) return;
-        if (!ops.EquivalentTo(_originalOperations))
-        {
-            e.Cancel = true;
-            object? result = await DialogHost.Show(new DialogBox(Dialog, "Are you sure you want to discard your changes?", "Sequence modified", "Yes", "No"), Dialog);
-            if (result is "Yes")
-            {
-                _closing = true;
-                Close(false);
-            }
-        }
+        if (ops.EquivalentTo(_originalOperations)) return;
+
+        e.Cancel = true;
+
+        object? result = await DialogHost.Show(new DialogBox(Dialog, "Are you sure you want to discard your changes?", "Sequence modified", "Yes", "No"), Dialog);
+        if (result is "No") return;
+
+        _closing = true;
+        Close(false);
     }
 
     private async void TestClicked(object? sender, RoutedEventArgs e)

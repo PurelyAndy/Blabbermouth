@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -14,11 +13,11 @@ public partial class PhraseListItem : UserControl
     public event EventHandler<PhraseEntry>? MoveDown;
     public event EventHandler<PhraseEntry>? Remove;
     public event EventHandler<RoutedEventArgs>? EnterPressed;
-    
+
     public PhraseListItem()
     {
         InitializeComponent();
-        
+
         UpButton.Click += (_, _) => MoveUp?.Invoke(this, (PhraseEntry)DataContext!);
         DownButton.Click += (_, _) => MoveDown?.Invoke(this, (PhraseEntry)DataContext!);
         RemoveButton.Click += (_, _) => Remove?.Invoke(this, (PhraseEntry)DataContext!);
@@ -42,28 +41,16 @@ public partial class PhraseListItem : UserControl
     private async void SequenceButtonClicked(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not PhraseEntry entry) return;
-        
+
         OperationSequence workingCopy = entry.Operations.Clone();
         SequenceEditorWindow window = new(workingCopy);
 
-        if (TopLevel.GetTopLevel(this) is Window parentWindow)
-        {
-            if (await window.ShowDialog<bool>(parentWindow))
-            {
-                entry.Operations = workingCopy;
-            }
-        }
-    }
+        if (TopLevel.GetTopLevel(this) is not Window parentWindow) return;
 
-    private void LengthChanged(object? sender, NumericUpDownValueChangedEventArgs e)
-    {
-        if (sender is not NumericUpDown nud) return;
-        if (nud.Value == null)
+        if (await window.ShowDialog<bool>(parentWindow))
         {
-            nud.Value = 0.3m;
-            return;
+            entry.Operations = workingCopy;
         }
-        nud.Value = Math.Round(nud.Value.Value, 1);
     }
 
     private void SettingsButtonClicked(object? sender, RoutedEventArgs e)

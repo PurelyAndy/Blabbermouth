@@ -1,22 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Data.Converters;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Blabbermouth.Data;
 
 public class OperationSequence : ObservableCollection<Operation>
 {
     public string AsString => ToString();
-    
+
     public async Task Perform()
     {
         for (int i = 0; i < Count; i++)
@@ -24,7 +21,7 @@ public class OperationSequence : ObservableCollection<Operation>
             await this[i].Perform(i == this.Count - 1);
         }
     }
-    
+
     public OperationSequence Clone()
     {
         OperationSequence copy = [];
@@ -62,19 +59,19 @@ public class OperationSequence : ObservableCollection<Operation>
             Operation operation = this[i];
             Operation? next = i < Count - 1 ? this[i + 1] : null;
             Operation? nextNext = i < Count - 2 ? this[i + 2] : null;
-            
+
             string opString = operation.ToString();
             if (i == 0)
                 sb.Append(char.ToUpper(opString[0])).Append(opString[1..]);
             else
                 sb.Append(opString);
-            
+
             if (next is null)
             {
                 sb.Append('.');
                 break;
             }
-            
+
             if (operation.WaitForCompletion || operation.Kind == OperationKind.Wait)
             {
                 sb.Append(". Then, ");
@@ -100,7 +97,7 @@ public class OperationSequence : ObservableCollection<Operation>
         }
         return sb.ToString();
     }
-    
+
     protected override void InsertItem(int index, Operation item)
     {
         item.PropertyChanged += OnItemPropertyChanged;
@@ -139,12 +136,12 @@ public class OperationSequence : ObservableCollection<Operation>
         base.ClearItems();
         OnPropertyChanged(new(nameof(AsString)));
     }
-    
+
     private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         OnPropertyChanged(new(nameof(AsString)));
     }
-    
+
     public bool EquivalentTo(OperationSequence? other)
     {
         if (other is null || Count != other.Count) return false;
@@ -154,7 +151,7 @@ public class OperationSequence : ObservableCollection<Operation>
         }
         return true;
     }
-    
+
     public int GetHashCodeForEquivalence()
     {
         int hash = 17;

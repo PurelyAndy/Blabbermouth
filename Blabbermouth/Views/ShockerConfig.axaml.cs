@@ -241,8 +241,8 @@ public partial class ShockerConfig : UserControl
         if (string.IsNullOrEmpty(clipboardText)) return;
         Regex shareCodeLinkRegex = ShareCodeLinkRegex();
         Regex shareCodeRegex = ShareCodeRegex();
-        
-        Match? linkMatch = shareCodeLinkRegex.Match(clipboardText);
+
+        Match linkMatch = shareCodeLinkRegex.Match(clipboardText);
         if (linkMatch.Success)
             ShareCodeTextBox.Text = linkMatch.Groups[1].Value;
         else if (shareCodeRegex.Match(clipboardText) is { Success: true } codeMatch)

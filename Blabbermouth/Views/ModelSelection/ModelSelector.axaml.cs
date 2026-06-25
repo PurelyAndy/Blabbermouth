@@ -66,7 +66,7 @@ public partial class ModelSelector : UserControl
         IStorageProvider? storageProvider = TopLevel.GetTopLevel(this)?.StorageProvider;
         if (storageProvider == null) return;
 
-        string lastLocation = Settings.Get<string>("lastLocation");
+        string? lastLocation = Settings.Get<string>("lastLocation");
         IStorageFolder? startLocation = null;
         if (!string.IsNullOrWhiteSpace(lastLocation))
         {
@@ -80,13 +80,13 @@ public partial class ModelSelector : UserControl
         });
 
         if (result.Count <= 0) return;
-        
+
         string selectedPath = result[0].Path.LocalPath;
         Settings.Set("lastLocation", selectedPath);
         CustomModelPath.Text = selectedPath;
         ModelSelect.SelectedItem = null;
     }
 
-    public virtual Dictionary<string, DownloadableModel> Models { get; }
+    public virtual Dictionary<string, DownloadableModel> Models { get; } = [];
 }
 
