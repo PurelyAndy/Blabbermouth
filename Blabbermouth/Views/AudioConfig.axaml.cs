@@ -22,7 +22,7 @@ public partial class AudioConfig : UserControl
         MicInputComboBox.Items.Clear();
         SpeakersInputComboBox.Items.Clear();
 
-        using var engine = new MiniAudioEngine();
+        using MiniAudioEngine engine = new();
         
         string lastMic = Settings.Get<string>("micDevice") ?? "";
         bool setToLastMic = false;

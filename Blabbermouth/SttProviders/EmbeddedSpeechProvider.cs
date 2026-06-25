@@ -58,7 +58,7 @@ public sealed class EmbeddedSpeechProvider : ISpeechRecognizerProvider
 
         _engine = new();
 
-        var format = new AudioFormat
+        AudioFormat format = new()
         {
             Format = SampleFormat.F32,
             Channels = 1,

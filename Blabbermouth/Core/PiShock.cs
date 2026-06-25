@@ -26,7 +26,7 @@ public static class PiShock
         if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(ShareCode) || string.IsNullOrEmpty(ApiKey))
             return "PiShock not configured";
         
-        var body = new ApiPayload
+        ApiPayload body = new()
         {
             code = ShareCode,
             duration = duration,
@@ -45,7 +45,7 @@ public static class PiShock
 
     public static async Task<string> SerialOperate(int intensity, int ms, ShockerAction op)
     {
-        var payload = new SerialPayload
+        SerialPayload payload = new()
         {
             cmd = "operate",
             value = new SerialOperation

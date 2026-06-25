@@ -143,7 +143,7 @@ public class OperationSequence : ObservableCollection<Operation>
 
     protected override void ClearItems()
     {
-        foreach (var item in this)
+        foreach (Operation item in this)
             item.PropertyChanged -= OnItemPropertyChanged;
 
         base.ClearItems();

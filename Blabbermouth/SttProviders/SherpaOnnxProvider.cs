@@ -49,8 +49,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
                 tokensPath = file;
         }
 
-        // Create recognizer config
-        var config = new OnlineRecognizerConfig
+        OnlineRecognizerConfig config = new()
         {
             ModelConfig = new()
             {
@@ -83,7 +82,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
 
         _engine = new();
 
-        var format = new AudioFormat
+        AudioFormat format = new()
         {
             Format = SampleFormat.F32,
             Channels = 1,
