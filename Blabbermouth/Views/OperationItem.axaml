@@ -28,7 +28,7 @@
             </StackPanel>
             <StackPanel Grid.Column="3" Name="LengthGroup" Orientation="Horizontal">
                 <TextBlock Text="⏱️" FontSize="18" VerticalAlignment="Center" />
-                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="0.3" Maximum="15" Width="58" Value="{Binding Length, Mode=TwoWay}" />
+                <NumericUpDown Padding="0" VerticalContentAlignment="Center" Minimum="0.2" Maximum="15" Width="58" Value="{Binding Length, Mode=TwoWay}" />
             </StackPanel>
             <TextBox Grid.Column="4" Name="PathTextBox" Margin="4 0 0 0" Padding="4 0 0 0" VerticalContentAlignment="Center" Text="{Binding FilePath, Mode=TwoWay}" HorizontalAlignment="Stretch" />
             <Button Grid.Column="5" FontSize="18" FontFamily="Default" Padding="0" Margin="4 0 0 0" Click="WaitForCompletionButtonClicked">
