@@ -12,9 +12,9 @@
     <Grid RowDefinitions="* *" Margin="10">
         <StackPanel Grid.Row="0">
             <TextBlock Text="Blabbermouth" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 0 0 5" />
-            <TextBlock Text="Version 3.2.1" FontSize="14" HorizontalAlignment="Center" Margin="0 0 0 10" />
+            <TextBlock Name="VersionText" Text="Version 3.2.1" FontSize="14" HorizontalAlignment="Center" Margin="0 0 0 10" />
             <TextBlock Text="Blabbermouth is an open-source speech recognition application that sends commands to a PiShock device based on recognized speech."
-                       FontSize="12" HorizontalAlignment="Center" Margin="10 0 10 10" TextWrapping="Wrap" />
+                       FontSize="12" HorizontalAlignment="Center" TextAlignment="Center" Margin="10 0 10 10" TextWrapping="Wrap" />
         </StackPanel>
         <Button Grid.Row="0" Background="Transparent" BorderThickness="0" Content="×" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -15 -10 0" Padding="5 0 5 0" Command="{Binding #Root.Host.CloseDialogCommand}" />
         <StackPanel Grid.Row="1" VerticalAlignment="Bottom">

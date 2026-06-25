@@ -1,3 +1,4 @@
+using System.Reflection;
 using Avalonia.Controls;
 using DialogHostAvalonia;
 
@@ -10,5 +11,10 @@ public partial class AboutView : UserControl
     {
         Host = host;
         InitializeComponent();
+        string? version = typeof(Program).Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion;
+        version = string.IsNullOrEmpty(version) ? "Unknown" : version.Split('+')[0];
+        VersionText.Text = $"Version {version}";
     }
 }
