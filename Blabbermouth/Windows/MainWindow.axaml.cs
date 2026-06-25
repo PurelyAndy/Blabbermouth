@@ -53,6 +53,10 @@ public partial class MainWindow : Window
 
         PhraseList.ImportPhrases(Settings.Get<string>("lastPhrases") ?? "[]");
         
+        SttManager.AllowMultiplePhrases = AllowMultiplePhrasesMenuOption.IsChecked = Settings.Get<bool>("allowMultiplePhrases");
+        SttManager.AllowMultipleOfSamePhrase = AllowMultipleOfSamePhraseMenuOption.IsChecked = Settings.Get<bool>("allowMultipleOfSamePhrase");
+        SttManager.DetectBeforeDoneTalking = DetectBeforeDoneTalkingMenuOption.IsChecked = Settings.Get<bool>("detectBeforeDoneTalking");
+        
         string lastModel = Settings.Get<string>("lastModel") ?? "";
         bool lastModelWasCustom = Settings.Get<bool>("lastModelWasCustom");
         
@@ -370,6 +374,21 @@ public partial class MainWindow : Window
     {
         string json = JsonSerializer.Serialize(PhraseList.Phrases, PhraseListJsonContext.Default.ListPhraseEntry);
         Settings.Set("lastPhrases", json);
+    }
+
+    private void AllowMultiplePhrasesClicked(object? sender, RoutedEventArgs e)
+    {
+        SttManager.AllowMultiplePhrases = Settings.Set("allowMultiplePhrases", AllowMultiplePhrasesMenuOption.IsChecked);
+    }
+
+    private void AllowMultipleOfSamePhraseClicked(object? sender, RoutedEventArgs e)
+    {
+        SttManager.AllowMultipleOfSamePhrase = Settings.Set("allowMultipleOfSamePhrase", AllowMultipleOfSamePhraseMenuOption.IsChecked);
+    }
+
+    private void DetectBeforeDoneTalkingClicked(object? sender, RoutedEventArgs e)
+    {
+        SttManager.DetectBeforeDoneTalking = Settings.Set("detectBeforeDoneTalking", DetectBeforeDoneTalkingMenuOption.IsChecked);
     }
 }
 

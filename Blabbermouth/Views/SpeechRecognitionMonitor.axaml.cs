@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
@@ -9,16 +10,24 @@ namespace Blabbermouth.Views;
 
 public partial class SpeechRecognitionMonitor : UserControl
 {
-    private readonly List<TextSegment> _monitorTextSegments = [];
+    private readonly List<(Activation Activation, bool Partial, List<TextSegment> Segments)> _monitorTextSegments = [];
 
     public SpeechRecognitionMonitor()
     {
         InitializeComponent();
     }
 
-    public void AddSegments(IEnumerable<TextSegment> segments)
+    public void AddSegments(Activation activation, bool partial, List<TextSegment> segments)
     {
-        _monitorTextSegments.AddRange(segments);
+        int existingIndex = _monitorTextSegments.FindIndex(entry => entry.Activation == activation && entry.Partial);
+        if (existingIndex != -1)
+        {
+            _monitorTextSegments[existingIndex] = (activation, partial, segments);
+        }
+        else
+        {
+            _monitorTextSegments.Add((activation, partial, segments));
+        }
         ClampText();
         ApplyStyles();
         OutputScroller.ScrollToEnd();
@@ -28,24 +37,7 @@ public partial class SpeechRecognitionMonitor : UserControl
     {
         const int maxLines = 50;
 
-        int lines = 0;
-        int i = _monitorTextSegments.Count - 1;
-        for (; i >= 0; i--)
-        {
-            if (_monitorTextSegments[i].Text.Contains('\n'))
-            {
-                lines++;
-            }
-            if (lines > maxLines)
-            {
-                i++;
-                break;
-            }
-        }
-        if (i > 0)
-        {
-            _monitorTextSegments.RemoveRange(0, i);
-        }
+        _monitorTextSegments.RemoveRange(0, Math.Max(0, _monitorTextSegments.Count - maxLines));
     }
 
     private void ApplyStyles()
@@ -56,7 +48,8 @@ public partial class SpeechRecognitionMonitor : UserControl
         MonitorBlock.Text = null;
         MonitorBlock.Inlines?.Clear();
 
-        foreach (TextSegment segment in _monitorTextSegments.Where(segment => !string.IsNullOrEmpty(segment.Text)))
+        foreach ((_, _, List<TextSegment> segments) in _monitorTextSegments)
+        foreach (TextSegment segment in segments.Where(segment => !string.IsNullOrEmpty(segment.Text)))
         {
             if (!string.IsNullOrEmpty(segment.Tooltip))
             {
@@ -83,7 +76,7 @@ public partial class SpeechRecognitionMonitor : UserControl
             }
             else
             {
-                var run = new Run(segment.Text)
+                Run run = new(segment.Text)
                 {
                     Foreground = segment.Foreground,
                     Background = segment.Background,

@@ -10,7 +10,7 @@ public static class Settings
 {
     private const string SettingsPath = "settings.csv";
     
-    public static void Set<T>(string setting, T value)
+    public static T Set<T>(string setting, T value)
     {
         string[] lines = File.ReadAllLines(SettingsPath);
         File.WriteAllLines(SettingsPath, lines.Select(line =>
@@ -19,6 +19,7 @@ public static class Settings
                 return setting + "," + value;
             return line;
         }));
+        return value;
     }
 
     public static T? Get<T>(string setting)
@@ -48,7 +49,7 @@ public static class Settings
 
     private static void Add<T>(string setting, T value) => File.AppendAllText(SettingsPath, '\n' + setting + ',' + value);
 
-    private static bool Contains(string setting)
+    private static bool Has(string setting)
     {
         string[] lines = File.ReadAllLines(SettingsPath);
         return lines.Any(line => line.StartsWith(setting + ","));
@@ -76,20 +77,23 @@ public static class Settings
             }
         }
         
-        if (!Contains("version"))               Add("version",              "1");
-        if (!Contains("username"))              Add("username",             "");
-        if (!Contains("shareCode"))             Add("shareCode",            "");
-        if (!Contains("apiKey"))                Add("apiKey",               "");
-        if (!Contains("mode"))                  Add("mode",                 SttKind.Embedded);
-        if (!Contains("lastLocation"))          Add("lastLocation",         Directory.GetCurrentDirectory());
-        if (!Contains("shockerId"))             Add("shockerId",            "");
-        if (!Contains("usingSerial"))           Add("usingSerial",          OperatingSystem.IsWindows());
-        if (!Contains("micDevice"))             Add("micDevice",            "");
-        if (!Contains("speakerDevice"))         Add("speakerDevice",        "");
-        if (!Contains("useMic"))                Add("useMic",               false);
-        if (!Contains("useSpeaker"))            Add("useSpeaker",           false);
-        if (!Contains("lastPhrases"))           Add("lastPhrases",          "[]");
-        if (!Contains("lastModel"))             Add("lastModel",            "");
-        if (!Contains("lastModelWasCustom"))    Add("lastModelWasCustom",   false);
+        if (!Has("version"))                    Add("version",                      "1");
+        if (!Has("username"))                   Add("username",                     "");
+        if (!Has("shareCode"))                  Add("shareCode",                    "");
+        if (!Has("apiKey"))                     Add("apiKey",                       "");
+        if (!Has("mode"))                       Add("mode",                         SttKind.Embedded);
+        if (!Has("lastLocation"))               Add("lastLocation",                 Directory.GetCurrentDirectory());
+        if (!Has("shockerId"))                  Add("shockerId",                    "");
+        if (!Has("usingSerial"))                Add("usingSerial",                  OperatingSystem.IsWindows());
+        if (!Has("micDevice"))                  Add("micDevice",                    "");
+        if (!Has("speakerDevice"))              Add("speakerDevice",                "");
+        if (!Has("useMic"))                     Add("useMic",                       false);
+        if (!Has("useSpeaker"))                 Add("useSpeaker",                   false);
+        if (!Has("lastPhrases"))                Add("lastPhrases",                  "[]");
+        if (!Has("lastModel"))                  Add("lastModel",                    "");
+        if (!Has("lastModelWasCustom"))         Add("lastModelWasCustom",           false);
+        if (!Has("allowMultiplePhrases"))       Add("allowMultiplePhrases",         true);
+        if (!Has("allowMultipleOfSamePhrase"))  Add("allowMultipleOfSamePhrase",    false);
+        if (!Has("detectBeforeDoneTalking"))    Add("detectBeforeDoneTalking",      false);
     }
 }

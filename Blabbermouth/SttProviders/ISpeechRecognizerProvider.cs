@@ -1,10 +1,11 @@
 using System;
+using Blabbermouth.Data;
 
 namespace Blabbermouth.SttProviders;
 
 public interface ISpeechRecognizerProvider : IDisposable
 {
-    event Action<string>? Recognized;
+    event Action<string, bool>? Recognized;
     void Start(string deviceId, bool isLoopback);
     void Stop();
 }

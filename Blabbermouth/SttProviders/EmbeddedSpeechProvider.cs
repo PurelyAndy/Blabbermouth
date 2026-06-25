@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using Blabbermouth.Core;
 using Blabbermouth.Data;
+using Blabbermouth.Util;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using SoundFlow.Abstracts.Devices;
@@ -13,7 +16,7 @@ using SoundFlow.Structs;
 
 namespace Blabbermouth.SttProviders;
 
-public sealed class EmbeddedSpeechProvider : ISpeechRecognizerProvider
+public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
 {
     private readonly EmbeddedSpeechConfig _speechConfig;
     private SpeechRecognizer? _recognizer;
@@ -22,7 +25,7 @@ public sealed class EmbeddedSpeechProvider : ISpeechRecognizerProvider
     private MiniAudioEngine? _engine;
     private AudioCaptureDevice? _capture;
     
-    public event Action<string>? Recognized;
+    public event Action<string, bool>? Recognized;
 
     public EmbeddedSpeechProvider(ModelInformation model)
     {
@@ -51,7 +54,15 @@ public sealed class EmbeddedSpeechProvider : ISpeechRecognizerProvider
             IEnumerable<LexicalResult> results = Best(e.Result);
             string? words = results.FirstOrDefault()?.Lexical?.ToLower();
             if (!string.IsNullOrWhiteSpace(words))
-                Recognized?.Invoke(words);
+                Recognized?.Invoke(words, false);
+        };
+        _recognizer.Recognizing += (_, e) =>
+        {
+            if (!SttManager.DetectBeforeDoneTalking) return;
+            if (e.Result.Reason != ResultReason.RecognizingSpeech) return;
+            
+            if (!string.IsNullOrWhiteSpace(e.Result.Text))
+                Recognized?.Invoke(RawLexical(e.Result.Text), true);
         };
         
         _ = _recognizer.StartContinuousRecognitionAsync();
@@ -127,6 +138,39 @@ public sealed class EmbeddedSpeechProvider : ISpeechRecognizerProvider
                    ?.NBest
                ?? [];
     }
+
+    private static HashSet<string> KnownContractions =
+    [
+        "it's", "that's", "what's", "who's", "he's", "she's", "where's", "there's", "here's", "how's",
+        "i'll", "you'll", "he'll", "she'll", "it'll", "we'll", "they'll", "that'll", "what'll", "who'll",
+        "i'd", "you'd", "he'd", "she'd", "it'd", "we'd", "they'd", "that'd", "what'd", "who'd",
+        "i've", "you've", "we've", "they've",
+        "could've", "should've", "would've", "might've", "must've",
+        "can't", "cannot", "won't", "don't", "doesn't", "didn't", "isn't", "aren't", "wasn't", "weren't",
+        "haven't", "hasn't", "hadn't", "wouldn't", "shouldn't", "couldn't", "mustn't", "needn't",
+        "let's",
+    ];
+    private static string RawLexical(string text)
+    {
+        // the "lexical" field in the detailed result contains the raw recognized text without punctuation and certain
+        // formatting, but it's not available for partial results, so we have to clean it up ourselves
+        string initial = text.ToLower().Replace(".", "").Replace(",", "").Replace("!", "").Replace("?", "");
+        initial = NumbersRegex().Replace(initial, m => NumbersToWords.Perform(m.Value));
+        initial = ContractionsRegex().Replace(initial, m =>
+        {
+            string contraction = m.Value.ToLower();
+            if (KnownContractions.Contains(contraction))
+                return contraction;
+            return m.Groups[1].Value + " " + m.Groups[2].Value;
+        });
+        return initial;
+    }
+    
+    [GeneratedRegex(@"-?((?:\d{4})|(?:\d{1,3}(?:,\d{3})+)|\d+)?(?:\.\d+)?")]
+    private static partial Regex NumbersRegex();
+
+    [GeneratedRegex(@"(\w+)('\w+)")]
+    private static partial Regex ContractionsRegex();
 }
 
 public sealed class DetailedSpeechRecognitionResultCollection

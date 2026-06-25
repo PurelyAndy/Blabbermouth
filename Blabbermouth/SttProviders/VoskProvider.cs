@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.Json;
+using Blabbermouth.Core;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Backends.MiniAudio;
 using SoundFlow.Enums;
@@ -16,7 +17,7 @@ public sealed class VoskProvider : ISpeechRecognizerProvider
     private MiniAudioEngine? _engine;
     private AudioCaptureDevice? _capture;
 
-    public event Action<string>? Recognized;
+    public event Action<string, bool>? Recognized;
 
     private readonly string _modelPath;
 
@@ -62,10 +63,19 @@ public sealed class VoskProvider : ISpeechRecognizerProvider
             if (_recognizer.AcceptWaveform(pcm16, pcm16.Length))
             {
                 string json = _recognizer.Result();
-                string? text = TryGetText(json);
+                string? text = TryGetText(json, "text");
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    Recognized?.Invoke(text.ToLowerInvariant());
+                    Recognized?.Invoke(text.ToLowerInvariant(), false);
+                }
+            }
+            else if (SttManager.DetectBeforeDoneTalking)
+            {
+                string json = _recognizer.PartialResult();
+                string? text = TryGetText(json, "partial");
+                if (SttManager.DetectBeforeDoneTalking && !string.IsNullOrWhiteSpace(text))
+                {
+                    Recognized?.Invoke(text.ToLowerInvariant(), true);
                 }
             }
         };
@@ -91,10 +101,10 @@ public sealed class VoskProvider : ISpeechRecognizerProvider
 
     public void Dispose() => Stop();
 
-    private static string? TryGetText(string json)
+    private static string? TryGetText(string json, string propertyName)
     {
         using JsonDocument doc = JsonDocument.Parse(json);
-        return doc.RootElement.TryGetProperty("text", out JsonElement textEl)
+        return doc.RootElement.TryGetProperty(propertyName, out JsonElement textEl)
             ? textEl.GetString()
             : null;
     }

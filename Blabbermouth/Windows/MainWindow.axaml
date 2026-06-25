@@ -29,6 +29,11 @@
                     <MenuItem Name="VoskMenuOption" Header="Vosk" ToggleType="Radio" GroupName="Mode" Padding="0" Click="VoskModeSelected" />
                     <MenuItem Name="SherpaOnnxMenuOption" Header="sherpa-onnx" ToggleType="Radio" GroupName="Mode" Padding="0" Click="SherpaOnnxModeSelected" />
                 </MenuItem>
+                <MenuItem Header="Settings" Background="#FF505050" Padding="4 2" BorderThickness="0">
+                    <MenuItem Name="AllowMultiplePhrasesMenuOption" ToggleType="CheckBox" Header="Allow Multiple Phrases Per Sentence" Padding="0" Click="AllowMultiplePhrasesClicked" />
+                    <MenuItem Name="AllowMultipleOfSamePhraseMenuOption" ToggleType="CheckBox" Header="Allow Multiple Of Same Phrase Per Sentence" Padding="0" Click="AllowMultipleOfSamePhraseClicked" />
+                    <MenuItem Name="DetectBeforeDoneTalkingMenuOption" ToggleType="CheckBox" Header="Detect Before Done Talking" Padding="0" Click="DetectBeforeDoneTalkingClicked" />
+                </MenuItem>
                 <MenuItem Header="Licenses" Background="#FF505050" Padding="4 2" BorderThickness="0" Click="ShowLicenses" />
                 <MenuItem Header="About" Background="#FF505050" Padding="4 2" BorderThickness="0" Click="AboutClicked" />
             </Menu>

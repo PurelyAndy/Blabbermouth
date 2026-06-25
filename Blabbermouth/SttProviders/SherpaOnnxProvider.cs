@@ -16,7 +16,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
     private MiniAudioEngine? _engine;
     private AudioCaptureDevice? _capture;
     
-    public event Action<string>? Recognized;
+    public event Action<string, bool>? Recognized;
 
     private readonly string _modelPath;
 
@@ -69,7 +69,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
                 SampleRate = 22050,
                 FeatureDim = 80,
             },
-            DecodingMethod = "greedy_search",
+            DecodingMethod = "modified_beam_search",
             MaxActivePaths = 4,
             EnableEndpoint = 1,
             Rule1MinTrailingSilence = 2.4f,
@@ -111,12 +111,22 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
                 OnlineRecognizerResult? result = _recognizer.GetResult(_stream);
                 string text = result.Text;
                 
-                if (!string.IsNullOrWhiteSpace(text))
+                if (!string.IsNullOrWhiteSpace(text) && text != ".")
                 {
-                    Recognized?.Invoke(text.ToLowerInvariant());
+                    Recognized?.Invoke(text.ToLowerInvariant(), false);
                 }
 
                 _recognizer.Reset(_stream);
+            }
+            else
+            {
+                OnlineRecognizerResult? result = _recognizer.GetResult(_stream);
+                string text = result.Text;
+                
+                if (!string.IsNullOrWhiteSpace(text) && text != ".")
+                {
+                    Recognized?.Invoke(text.ToLowerInvariant(), true);
+                }
             }
         };
 

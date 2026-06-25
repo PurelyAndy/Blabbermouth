@@ -17,21 +17,11 @@ public class OperationSequence : ObservableCollection<Operation>
 {
     public string AsString => ToString();
     
-    public bool EquivalentTo(OperationSequence? other)
-    {
-        if (other is null || Count != other.Count) return false;
-        for (int i = 0; i < Count; i++)
-        {
-            if (!this[i].EquivalentTo(other[i])) return false;
-        }
-        return true;
-    }
-    
     public async Task Perform()
     {
-        foreach (Operation operation in this)
+        for (int i = 0; i < Count; i++)
         {
-            await operation.Perform();
+            await this[i].Perform(i == this.Count - 1);
         }
     }
     
@@ -153,6 +143,26 @@ public class OperationSequence : ObservableCollection<Operation>
     private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         OnPropertyChanged(new(nameof(AsString)));
+    }
+    
+    public bool EquivalentTo(OperationSequence? other)
+    {
+        if (other is null || Count != other.Count) return false;
+        for (int i = 0; i < Count; i++)
+        {
+            if (!this[i].EquivalentTo(other[i])) return false;
+        }
+        return true;
+    }
+    
+    public int GetHashCodeForEquivalence()
+    {
+        int hash = 17;
+        foreach (Operation op in this)
+        {
+            hash = hash * 31 + op.GetHashCodeForEquivalence();
+        }
+        return hash;
     }
 }
 

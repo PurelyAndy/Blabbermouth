@@ -44,40 +44,29 @@ public partial class Operation : ObservableObject
         Length = length;
         WaitForCompletion = true;
     }
-    
-    public bool EquivalentTo(Operation? other)
-    {
-        if (other is null || Kind != other.Kind) return false;
-        return Kind switch
-        {
-            OperationKind.Shock or OperationKind.Vibration => Length == other.Length && Strength == other.Strength,
-            OperationKind.Sound or OperationKind.Application => FilePath == other.FilePath,
-            OperationKind.Wait or OperationKind.Beep => Length == other.Length,
-            _ => throw new ArgumentOutOfRangeException(),
-        };
-    }
 
-    public async Task Perform()
+    public async Task Perform(bool forceWait)
     {
+        bool wait = forceWait || WaitForCompletion;
         switch (Kind)
         {
             case OperationKind.Shock:
                 await SttManager.Operate(Strength, Length, ShockerAction.Shock);
-                if (WaitForCompletion)
+                if (wait)
                 {
                     await Task.Delay((int)(Length * 1000));
                 }
                 break;
             case OperationKind.Vibration:
                 await SttManager.Operate(Strength, Length, ShockerAction.Vibrate);
-                if (WaitForCompletion)
+                if (wait)
                 {
                     await Task.Delay((int)(Length * 1000));
                 }
                 break;
             case OperationKind.Beep:
                 await SttManager.Operate(Strength, Length, ShockerAction.Beep);
-                if (WaitForCompletion)
+                if (wait)
                 {
                     await Task.Delay((int)(Length * 1000));
                 }
@@ -85,7 +74,7 @@ public partial class Operation : ObservableObject
             case OperationKind.Sound:
                 try
                 {
-                    if (WaitForCompletion)
+                    if (wait)
                         await PlaybackManager.PlayAudio(FilePath);
                     else
                         _ = PlaybackManager.PlayAudio(FilePath);
@@ -100,7 +89,7 @@ public partial class Operation : ObservableObject
                 {
                     ProcessStartInfo psi = new(FilePath) { UseShellExecute = true };
                     using Process? process = Process.Start(psi);
-                    if (WaitForCompletion && process is not null)
+                    if (wait && process is not null)
                     {
                         await process.WaitForExitAsync();
                     }
@@ -142,6 +131,29 @@ public partial class Operation : ObservableObject
             OperationKind.Application => "launch application '" + FilePath + "'",
             OperationKind.Wait => "wait for " + Length + " second" + (Length == 1 ? "" : "s"),
             _ => "???",
+        };
+    }
+    
+    public bool EquivalentTo(Operation? other)
+    {
+        if (other is null || Kind != other.Kind) return false;
+        return Kind switch
+        {
+            OperationKind.Shock or OperationKind.Vibration => Length == other.Length && Strength == other.Strength,
+            OperationKind.Sound or OperationKind.Application => FilePath == other.FilePath,
+            OperationKind.Wait or OperationKind.Beep => Length == other.Length,
+            _ => throw new ArgumentOutOfRangeException(),
+        } && WaitForCompletion == other.WaitForCompletion;
+    }
+    
+    public int GetHashCodeForEquivalence()
+    {
+        return Kind switch
+        {
+            OperationKind.Shock or OperationKind.Vibration => HashCode.Combine(Kind, Length, Strength, WaitForCompletion),
+            OperationKind.Sound or OperationKind.Application => HashCode.Combine(Kind, FilePath, WaitForCompletion),
+            OperationKind.Wait or OperationKind.Beep => HashCode.Combine(Kind, Length, WaitForCompletion),
+            _ => throw new ArgumentOutOfRangeException(),
         };
     }
 }
