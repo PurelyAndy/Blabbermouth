@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Blabbermouth.Windows;
@@ -27,7 +28,10 @@ public static class UpdateChecker
             JsonElement root = JsonDocument.Parse(content).RootElement;
             newVersion = root.GetProperty("tag_name").GetString()![1..]; // Remove the leading 'v'
             changelog = root.GetProperty("body").GetString() ?? "";
-            string currentVersion = typeof(UpdateChecker).Assembly.GetName().Version?.ToString() ?? "0.0.0";
+            string? currentVersion = typeof(Program).Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion;
+            currentVersion = string.IsNullOrEmpty(currentVersion) ? "0.0.0" : currentVersion.Split('+')[0];
             updateAvailable = new Version(newVersion) > new Version(currentVersion);
         }
         catch
