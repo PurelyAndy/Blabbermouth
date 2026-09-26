@@ -242,15 +242,8 @@ public static class SttManager
     public static async Task Operate(int intensity, double seconds, ShockerAction op)
     {
         int ms = (int)(seconds * 1000);
-        if (MainWindow.I.ShockerConfig.UsingSerial)
-        {
-            await PiShock.SerialOperate(intensity, ms, op);
-        }
-        else
-        {
-            string response = await PiShock.Operate(intensity, ms, op);
-            Debug.WriteLine($"PiShock response: {response}");
-        }
+        var response = await PiShock.Operate(intensity, ms, op);
+        Debug.WriteLine($"PiShock response: {string.Join(", ", response.Select(r => $"({r.success}, {r.message})"))}");
     }
 
     private static void DisposeRecognizer(ref ISpeechRecognizerProvider? recognizer)

@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Blabbermouth.Data;
 using Blabbermouth.Windows;
 
 namespace Blabbermouth.Views;
@@ -84,7 +85,7 @@ public partial class PhraseList : UserControl
 
     public void ImportPhrases(string json)
     {
-        var importedPhrases = JsonSerializer.Deserialize<List<Data.PhraseEntry>>(json, PhraseListJsonContext.Default.ListPhraseEntry);
+        var importedPhrases = JsonSerializer.Deserialize<List<Data.PhraseEntry>>(json, JsonContext.Default.ListPhraseEntry);
         if (importedPhrases == null) return;
 
         _phrases.Clear();

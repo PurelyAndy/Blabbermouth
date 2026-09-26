@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -39,12 +39,12 @@ public partial class MainWindow : Window
             if (!Directory.Exists(DownloadableModel.DownloadedModelsFolder)) Directory.CreateDirectory(DownloadableModel.DownloadedModelsFolder);
             if (!Directory.Exists(DownloadableModel.TempFolder)) Directory.CreateDirectory(DownloadableModel.TempFolder);
         }
-
-        ShockerConfig.SetUsingSerial(Settings.Get<bool>("usingSerial"));
     }
 
     private async void WindowLoaded(object? sender, RoutedEventArgs e)
     {
+        LoadShockersFromSettings();
+
         if (OperatingSystem.IsWindows())
         {
             EmbeddedSpeechLocator.FindModels();
@@ -171,25 +171,14 @@ public partial class MainWindow : Window
         SttManager.Enabled = !SttManager.Enabled;
         if (SttManager.Enabled)
         {
-            if (!ShockerConfig.UsingSerial)
+            string? validationError = PiShock.ValidateShockers();
+            if (validationError is not null)
             {
-                string? reason = await ShockerConfig.TestCredentialsAsync();
-                if (reason != null)
-                {
-                    _ = DialogHost.Show(new DialogBox(Dialog, reason, "Cannot start Blabbermouth", "OK"), Dialog);
-                    SttManager.Enabled = false;
-                    return;
-                }
+                await ShowErrorAsync(validationError, "Cannot start Blabbermouth");
+                SttManager.Enabled = false;
+                return;
             }
-            else
-            {
-                await ShockerConfig.TestPortAsync();
-                if (PiShock.SerialPort is not { IsOpen: true })
-                {
-                    SttManager.Enabled = false;
-                    return;
-                }
-            }
+
             SttManager.UpdateRecognizers();
             StartStopButton.Content = "Stop Blabbermouth";
         }
@@ -202,16 +191,13 @@ public partial class MainWindow : Window
 
     private void SaveCredentials(object? sender, RoutedEventArgs e)
     {
-        Settings.Set("username", ShockerConfig.Username);
-        Settings.Set("shareCode", ShockerConfig.ShareCode);
-        Settings.Set("apiKey", ShockerConfig.ApiKey);
+        SaveShockersToSettings();
     }
 
     private void ForgetCredentials(object? sender, RoutedEventArgs e)
     {
-        Settings.Set("username", "");
-        Settings.Set("shareCode", "");
-        Settings.Set("apiKey", "");
+        Settings.Set("shockers", "[]");
+        Settings.Set("serialPort", "");
     }
 
     private async void ExportPhrases(object? sender, RoutedEventArgs e)
@@ -231,7 +217,7 @@ public partial class MainWindow : Window
         if (file == null) return;
 
         Settings.Set("lastLocation", System.IO.Path.GetDirectoryName(file.Path.LocalPath));
-        string json = JsonSerializer.Serialize(PhraseList.Phrases, PhraseListJsonContext.Default.ListPhraseEntry);
+        string json = JsonSerializer.Serialize(PhraseList.Phrases, JsonContext.Default.ListPhraseEntry);
         await File.WriteAllTextAsync(file.Path.LocalPath, json);
     }
 
@@ -374,7 +360,7 @@ public partial class MainWindow : Window
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
-        string json = JsonSerializer.Serialize(PhraseList.Phrases, PhraseListJsonContext.Default.ListPhraseEntry);
+        string json = JsonSerializer.Serialize(PhraseList.Phrases, JsonContext.Default.ListPhraseEntry);
         Settings.Set("lastPhrases", json);
     }
 
@@ -397,7 +383,31 @@ public partial class MainWindow : Window
     {
         await UpdateChecker.OpenLatestVersionPage();
     }
-}
 
-[JsonSerializable(typeof(List<PhraseEntry>))]
-public partial class PhraseListJsonContext : JsonSerializerContext;
+    private async void ShockerConfigButtonClicked(object? sender, RoutedEventArgs e)
+    {
+        ShockerConfigWindow window = new();
+        await window.ShowDialog<bool>(this);
+    }
+
+    private void LoadShockersFromSettings()
+    {
+        string json = Settings.Get<string>("shockers") ?? "[]";
+        List<Shocker>? shockers = JsonSerializer.Deserialize(json, JsonContext.Default.ListShocker);
+
+        PiShock.Shockers.Clear();
+        if (shockers is not null)
+        {
+            PiShock.Shockers.AddRange(shockers);
+        }
+    }
+
+    private void SaveShockersToSettings()
+    {
+        Settings.Set("shockers", JsonSerializer.Serialize(PiShock.Shockers, JsonContext.Default.ListShocker));
+        if (PiShock.SerialPort is { IsOpen: true })
+        {
+            Settings.Set("serialPort", PiShock.SerialPort.PortName);
+        }
+    }
+}

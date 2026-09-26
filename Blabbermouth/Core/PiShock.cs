@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -13,70 +15,17 @@ namespace Blabbermouth.Core;
 
 public static class PiShock
 {
-    private static readonly HttpClient Client = new();
-
-    public static string? Username = null;
-    public static string? ShareCode = null;
-    public static string? ApiKey = null;
+    public static readonly List<Shocker> Shockers = [];
     public static SerialPort? SerialPort;
-    public static int ShockerID;
 
-    public static async Task<string> Operate(int intensity, int duration, ShockerAction op)
+    public static async Task<(bool success, string? message)[]> Operate(int intensity, int ms, ShockerAction op)
     {
-        if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(ShareCode) || string.IsNullOrEmpty(ApiKey))
-            return "PiShock not configured";
-
-        ApiPayload body = new()
+        var results = new Task<(bool, string?)>[Shockers.Count];
+        for (int i = 0; i < Shockers.Count; i++)
         {
-            code = ShareCode,
-            duration = duration,
-            intensity = intensity,
-            op = (int)op,
-            apikey = ApiKey,
-            username = Username,
-            name = "Blabbermouth",
-        };
-
-        string json = JsonSerializer.Serialize(body, PiShockJsonContext.Default.ApiPayload);
-        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-        using HttpResponseMessage response = await Client.PostAsync("https://ps.pishock.com/PiShock/Operate", content);
-        return await response.Content.ReadAsStringAsync();
-    }
-
-    public static async Task<string> SerialOperate(int intensity, int ms, ShockerAction op)
-    {
-        SerialPayload payload = new()
-        {
-            cmd = "operate",
-            value = new SerialOperation
-            {
-                id = ShockerID,
-                op = op.ToString().ToLowerInvariant(),
-                duration = ms,
-                intensity = intensity,
-            },
-        };
-        string json = JsonSerializer.Serialize(payload, PiShockJsonContext.Default.SerialPayload);
-
-        if (SerialPort is not { IsOpen: true })
-        {
-            await DialogHost.Show(new DialogBox(MainWindow.I.Dialog,
-                "Serial port is not open. Please test your connection and try again.",
-                "Error", "OK"), MainWindow.I.Dialog);
-            return json;
+            results[i] = Shockers[i].Operate(intensity, ms, op);
         }
-        try
-        {
-            SerialPort.WriteLine(json);
-        }
-        catch (Exception e)
-        {
-            await DialogHost.Show(new DialogBox(MainWindow.I.Dialog,
-                $"Failed to send command over serial port:\n{e}",
-                "Serial communication error", "OK"), MainWindow.I.Dialog);
-        }
-
-        return json;
+        return await Task.WhenAll(results);
     }
 
     public static void ResetSerialPort(string port)
@@ -101,34 +50,62 @@ public static class PiShock
         SerialPort?.Close();
         SerialPort = null;
     }
-}
 
-// ReSharper disable InconsistentNaming
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-public class SerialPayload
-{
-    public required string cmd { get; set; }
-    public required object value { get; set; }
-}
-public class SerialOperation
-{
-    public required int id { get; set; }
-    public required string op { get; set; }
-    public required int duration { get; set; }
-    public required int intensity { get; set; }
-}
-public class ApiPayload
-{
-    public required string code { get; set; }
-    public required int duration { get; set; }
-    public required int intensity { get; set; }
-    public required int op { get; set; }
-    public required string apikey { get; set; }
-    public required string username { get; set; }
-    public required string name { get; set; }
-}
+    public static string? ValidateShocker(Shocker shocker)
+    {
+        if (!shocker.IsSerial)
+        {
+            if (string.IsNullOrWhiteSpace(shocker.ShareCode) || string.IsNullOrWhiteSpace(shocker.ApiKey))
+            {
+                return "One of the enabled API shockers is missing a username, share code, or API key. Please fix it in the shocker configuration menu.";
+            }
 
-[JsonSerializable(typeof(SerialPayload))]
-[JsonSerializable(typeof(SerialOperation))]
-[JsonSerializable(typeof(ApiPayload))]
-public partial class PiShockJsonContext : JsonSerializerContext;
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(shocker.ShockerID) || !int.TryParse(shocker.ShockerID, out int shockerId) || shockerId < 0)
+        {
+            return "One of the enabled serial shockers has an invalid shocker ID. Please fix it in the shocker configuration menu.";
+        }
+
+        string? port = Settings.Get<string>("serialPort");
+        if (string.IsNullOrWhiteSpace(port) || port.StartsWith("No serial ports"))
+        {
+            return "A serial shocker is enabled, but no valid serial port is selected. Open the shocker configuration menu and select a port.";
+        }
+
+        try
+        {
+            if (SerialPort is null || !SerialPort.IsOpen || !string.Equals(SerialPort.PortName, port, StringComparison.OrdinalIgnoreCase))
+            {
+                ResetSerialPort(port);
+            }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return "Access to the selected serial port is denied. Make sure no other applications are using the port, and try running Blabbermouth as an administrator.";
+        }
+        catch (Exception ex)
+        {
+            return $"Failed to open the selected serial port:\n{ex.Message}";
+        }
+
+        return null;
+    }
+
+    public static string? ValidateShockers()
+    {
+        List<Shocker> enabledShockers = Shockers.Where(shocker => shocker.IsEnabled).ToList();
+        if (enabledShockers.Count == 0)
+        {
+            return "No shockers are enabled. Open the shocker configuration menu and add or enable at least one shocker.";
+        }
+
+        foreach (Shocker shocker in enabledShockers)
+        {
+            return ValidateShocker(shocker);
+        }
+
+        return null;
+    }
+}

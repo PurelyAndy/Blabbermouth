@@ -133,7 +133,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
 
         return JsonSerializer.Deserialize(
                        json,
-                       SpeechJsonContext.Default
+                       JsonContext.Default
                            .DetailedSpeechRecognitionResultCollection)
                    ?.NBest
                ?? [];
@@ -181,6 +181,3 @@ public sealed class LexicalResult
 {
     public string? Lexical { get; set; }
 }
-[JsonSerializable(typeof(LexicalResult))]
-[JsonSerializable(typeof(DetailedSpeechRecognitionResultCollection))]
-internal partial class SpeechJsonContext : JsonSerializerContext;

@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:Blabbermouth.Views"
+        xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
+        Width="500" Height="500"
+        x:Class="Blabbermouth.Windows.ShockerConfigWindow"
+        WindowStartupLocation="CenterOwner"
+        Title="Shocker Configuration">
+    <Grid>
+        <Grid RowDefinitions="Auto Auto * Auto" Margin="10">
+            <Grid ColumnDefinitions="Auto * Auto" Margin="0 0 0 10">
+                <TextBlock VerticalAlignment="Center" Text="Serial port:" Margin="0 0 10 0" />
+                <ComboBox Grid.Column="1" Name="SerialPortsBox" SelectionChanged="SerialPortsBoxSelectionChanged" />
+                <Button Grid.Column="2" Name="AddShockerButton" Content="+ Add shocker" Click="AddShockerClicked"
+                        Margin="10 0 0 0" />
+            </Grid>
+
+            <TextBlock Grid.Row="1" Text="Configured shockers:" FontWeight="Bold" Margin="0 0 0 6" />
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <ItemsControl Name="ShockersListControl">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0 0 0 10">
+                                <views:ShockerConfig />
+                                <Button Content="Remove shocker" HorizontalAlignment="Right" Margin="0 6 0 0"
+                                        Click="RemoveShockerClicked" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0 10 0 0">
+                <Button Name="SaveButton" Content="Save" Width="100" Click="SaveClicked" />
+                <Button Name="CancelButton" Content="Cancel" Width="100" Click="CancelClicked" />
+            </StackPanel>
+        </Grid>
+
+        <dialogHost:DialogHost Name="Dialog" CloseOnClickAway="False" Height="1000">
+            <dialogHost:DialogHost.DialogContent />
+        </dialogHost:DialogHost>
+    </Grid>
+</Window>

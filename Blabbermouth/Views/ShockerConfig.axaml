@@ -1,23 +1,33 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Blabbermouth.Views.ShockerConfig">
-  <Grid ColumnDefinitions="*" RowDefinitions="Auto *">
-    <Grid ColumnDefinitions="*" RowDefinitions="* * * * *">
-      <Grid Name="ApiCredsGrid" Grid.Row="0" RowDefinitions="Auto Auto Auto Auto Auto" IsVisible="True">
-        <Button Grid.Row="0" VerticalAlignment="Bottom" Content="Test Credentials (Vibrate)" Click="TestCredentialsClicked" HorizontalAlignment="Stretch" Margin="0 0 0 5" />
-        <TextBox Grid.Row="1" Name="UsernameTextBox" Watermark="Username" HorizontalAlignment="Stretch" />
-        <TextBox Grid.Row="2" Name="ShareCodeTextBox" Watermark="Share Code" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch" PastingFromClipboard="ShareCodeTextBox_OnPastingFromClipboard" />
-        <TextBox Grid.Row="3" Name="ApiKeyTextBox" Watermark="API Key" PasswordChar="•" Margin="0 5 0 0" HorizontalAlignment="Stretch" />
-        <Button Name="UseSerialButton" Grid.Row="4" Content="Use Serial Port (lower-latency)" HorizontalAlignment="Stretch" Click="UseSerialClicked" Margin="0 5 0 0" />
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:data="clr-namespace:Blabbermouth.Data"
+             xmlns:views="clr-namespace:Blabbermouth.Views"
+             mc:Ignorable="d"
+             x:Class="Blabbermouth.Views.ShockerConfig"
+             x:DataType="data:Shocker">
+  <UserControl.Resources>
+    <views:EnabledToBackgroundConverter x:Key="EnabledToBackgroundConverter" />
+  </UserControl.Resources>
+  <Border BorderThickness="1" Background="{Binding IsEnabled, Converter={StaticResource EnabledToBackgroundConverter}}" BorderBrush="#808080" Padding="10" Margin="0 0 0 10">
+    <StackPanel Spacing="8">
+      <Grid ColumnDefinitions="Auto *">
+        <CheckBox Content="Enabled" IsChecked="{Binding IsEnabled, Mode=TwoWay}" VerticalAlignment="Center" />
+        <Button Name="ModeButton" Grid.Column="1" HorizontalAlignment="Right" Click="ToggleModeClicked" />
       </Grid>
 
-      <Grid Name="SerialGrid" Grid.Row="1" RowDefinitions="Auto * Auto Auto" IsVisible="False">
-        <Button Grid.Row="0" VerticalAlignment="Bottom" Content="Test Port (Vibrate)" Click="TestPortClicked" HorizontalAlignment="Stretch" Margin="0 0 0 5" />
-        <ListBox Grid.Row="1" Name="SerialPortsBox" Margin="0 0 0 5" />
-        <TextBox Grid.Row="2" Name="ShockerIdBox" Watermark="Shocker ID" TextChanged="ShockerIdChanged" Text="0" />
-        <Button Grid.Row="3" Content="Use PiShock API (over-the-internet)" HorizontalAlignment="Stretch" Click="UseApiClicked" Margin="0 5 0 0" />
-      </Grid>
-    </Grid>
-  </Grid>
+      <StackPanel Name="ApiGrid" Spacing="5">
+        <TextBox Name="ShareCodeTextBox" Watermark="Share code" PasswordChar="•" Text="{Binding ShareCode, Mode=TwoWay}" />
+        <TextBox Name="ApiKeyTextBox" Watermark="API key" PasswordChar="•" Text="{Binding ApiKey, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Name="SerialGrid" Spacing="5">
+        <TextBox Name="ShockerIdBox" Watermark="Shocker ID" Text="{Binding ShockerID, Mode=TwoWay}" />
+      </StackPanel>
+
+      <Button Content="Test this shocker" HorizontalAlignment="Stretch" Click="TestClicked" />
+    </StackPanel>
+  </Border>
 </UserControl>
 

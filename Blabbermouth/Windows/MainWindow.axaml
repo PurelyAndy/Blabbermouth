@@ -20,7 +20,7 @@
                     <MenuItem Header="Export to File" Padding="0" Click="ExportPhrases" />
                     <MenuItem Header="Import from File" Padding="0" Click="ImportPhrases" />
                 </MenuItem>
-                <MenuItem Header="Credentials" Background="#FF505050" Padding="4 2" BorderThickness="0">
+                <MenuItem Header="Shockers" Background="#FF505050" Padding="4 2" BorderThickness="0">
                     <MenuItem Header="Save" Padding="0" Click="SaveCredentials" />
                     <MenuItem Header="Forget" Padding="0" Click="ForgetCredentials" />
                 </MenuItem>
@@ -45,7 +45,7 @@
             <Grid Row="5" RowDefinitions="Auto Auto">
                 <Grid Grid.Row="0" Name="CollapsableGrid" IsVisible="True" ColumnDefinitions="* *">
                     <views:AudioConfig Name="AudioConfig" Grid.Column="0" HorizontalAlignment="Stretch" Margin="5 10 5 5" />
-                    <views:ShockerConfig Name="ShockerConfig" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5 10 5 5" />
+                    <Button Grid.Column="1" Name="ShockerConfigButton" Content="Configure Shockers" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5 10 5 5" Click="ShockerConfigButtonClicked" />
                 </Grid>
                 <Button Grid.Row="1" Name="CollapseButton" HorizontalAlignment="Stretch" Margin="0 0 0 0" Click="CollapseButtonClick">
                     <Path Data="M 0 12 L 64 0 L 128 12"
