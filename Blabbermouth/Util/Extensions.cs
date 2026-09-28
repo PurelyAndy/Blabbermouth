@@ -1,3 +1,12 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using SoundFlow.Abstracts.Devices;
+using SoundFlow.Backends.MiniAudio;
+using SoundFlow.Backends.MiniAudio.Devices;
+using SoundFlow.Backends.MiniAudio.Enums;
+using SoundFlow.Structs;
+
 namespace Blabbermouth.Util;
 
 public static class Extensions
@@ -23,5 +32,19 @@ public static class Extensions
     public static int Mod(this int x, int m)
     {
         return (x % m + m) % m;
+    }
+
+    public static AudioCaptureDevice CreateCaptureDevice(this MiniAudioEngine engine, string deviceName, bool isLoopback, AudioFormat format)
+    {
+        DeviceInfo device = (isLoopback
+                ? engine.PlaybackDevices
+                : engine.CaptureDevices)
+            .FirstOrDefault(d => d.Name == deviceName);
+
+        MiniAudioDeviceConfig config = (MiniAudioDeviceConfig)typeof(MiniAudioEngine)
+            .GetMethod("GetDefaultDeviceConfig", BindingFlags.NonPublic | BindingFlags.Static)!.Invoke(null, [])!;
+        typeof(DeviceSubConfig).GetProperty("IsLoopback", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(config.Capture, isLoopback);
+
+        return engine.InitializeCaptureDevice(device, format, config);
     }
 }

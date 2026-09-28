@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Blabbermouth.Util;
 using SherpaOnnx;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Backends.MiniAudio;
@@ -25,7 +26,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
         _modelPath = modelPath;
     }
 
-    public void Start(string deviceId, bool isLoopback)
+    public void Start(string deviceName, bool isLoopback)
     {
         Stop();
         string encoderPath = "";
@@ -89,11 +90,7 @@ public sealed class SherpaOnnxProvider : ISpeechRecognizerProvider
             SampleRate = 22050,
         };
 
-        _capture = isLoopback
-            ? _engine.InitializeLoopbackDevice(format)
-            : _engine.InitializeCaptureDevice(
-                _engine.CaptureDevices.FirstOrDefault(d => d.Id.ToString() == deviceId),
-                format);
+        _capture = _engine.CreateCaptureDevice(deviceName, isLoopback, format);
 
         _capture.OnAudioProcessed += (samples, _) =>
         {

@@ -39,7 +39,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
         _speechConfig.SpeechRecognitionOutputFormat = OutputFormat.Detailed;
     }
 
-    public void Start(string deviceId, bool isLoopback)
+    public void Start(string deviceName, bool isLoopback)
     {
         Stop();
 
@@ -76,15 +76,7 @@ public sealed partial class EmbeddedSpeechProvider : ISpeechRecognizerProvider
             SampleRate = 16000,
         };
 
-        if (isLoopback)
-        {
-            _capture = _engine.InitializeLoopbackDevice(format);
-        }
-        else
-        {
-            DeviceInfo device = _engine.CaptureDevices.FirstOrDefault(d => d.Id.ToString() == deviceId);
-            _capture = _engine.InitializeCaptureDevice(device, format);
-        }
+        _capture = _engine.CreateCaptureDevice(deviceName, isLoopback, format);
 
         _capture.OnAudioProcessed += (samples, _) =>
         {

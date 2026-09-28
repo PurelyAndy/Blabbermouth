@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using Blabbermouth.Core;
+using Blabbermouth.Util;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Backends.MiniAudio;
 using SoundFlow.Enums;
@@ -26,7 +27,7 @@ public sealed class VoskProvider : ISpeechRecognizerProvider
         _modelPath = modelPath;
     }
 
-    public void Start(string deviceId, bool isLoopback)
+    public void Start(string deviceName, bool isLoopback)
     {
         Stop();
 
@@ -42,11 +43,12 @@ public sealed class VoskProvider : ISpeechRecognizerProvider
             SampleRate = 16000,
         };
 
-        _capture = isLoopback
-            ? _engine.InitializeLoopbackDevice(format)
-            : _engine.InitializeCaptureDevice(
-                _engine.CaptureDevices.FirstOrDefault(d => d.Id.ToString() == deviceId),
-                format);
+        DeviceInfo device = (isLoopback
+            ? _engine.PlaybackDevices
+            : _engine.CaptureDevices)
+            .FirstOrDefault(d => d.Name == deviceName);
+
+        _capture = _engine.CreateCaptureDevice(deviceName, isLoopback, format);
 
         _capture.OnAudioProcessed += (samples, _) =>
         {

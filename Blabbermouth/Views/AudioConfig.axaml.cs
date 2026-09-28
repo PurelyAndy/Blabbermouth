@@ -9,8 +9,8 @@ namespace Blabbermouth.Views;
 
 public partial class AudioConfig : UserControl
 {
-    public string? SelectedMicDeviceId => GetSelectedAudioDeviceId(MicInputComboBox);
-    public string? SelectedSpeakersDeviceId => GetSelectedAudioDeviceId(SpeakersInputComboBox);
+    public string? SelectedMicDeviceName => GetSelectedAudioDeviceName(MicInputComboBox);
+    public string? SelectedSpeakersDeviceName => GetSelectedAudioDeviceName(SpeakersInputComboBox);
 
     public AudioConfig()
     {
@@ -31,7 +31,7 @@ public partial class AudioConfig : UserControl
             MicInputComboBox.Items.Add(new ComboBoxItem
             {
                 Content = device.Name,
-                Tag = device.Id,
+                Tag = device.Name,
             });
             if (!string.IsNullOrEmpty(lastMic) && device.Name == lastMic)
             {
@@ -53,7 +53,7 @@ public partial class AudioConfig : UserControl
                 SpeakersInputComboBox.Items.Add(new ComboBoxItem
                 {
                     Content = device.Name,
-                    Tag = device.Id,
+                    Tag = device.Name,
                 });
                 if (!string.IsNullOrEmpty(lastSpeaker) && device.Name == lastSpeaker)
                 {
@@ -91,20 +91,11 @@ public partial class AudioConfig : UserControl
         SttManager.ListenToSpeakers = (SpeakersCheckBox.IsChecked = Settings.Get<bool>("useSpeaker")) ?? false;
     }
 
-    private static string? GetSelectedAudioDeviceId(ComboBox comboBox)
-    {
-        return comboBox.SelectedItem switch
-        {
-            ComboBoxItem item => item.Tag?.ToString(),
-            _ => null,
-        };
-    }
-
     private static string? GetSelectedAudioDeviceName(ComboBox comboBox)
     {
         return comboBox.SelectedItem switch
         {
-            ComboBoxItem item => item.Name,
+            ComboBoxItem item => item.Tag?.ToString(),
             _ => null,
         };
     }
@@ -124,15 +115,15 @@ public partial class AudioConfig : UserControl
     }
 
     private void MicInputChanged(object? sender, SelectionChangedEventArgs e)
-    {   
-        Settings.Set("micDevice", GetSelectedAudioDeviceName(MicInputComboBox) ?? "");
+    {
+        Settings.Set("micDevice", SelectedMicDeviceName ?? "");
         if (SttManager.Enabled)
             SttManager.UpdateMicRecognizer();
     }
 
     private void SpeakersInputChanged(object? sender, SelectionChangedEventArgs e)
-    {   
-        Settings.Set("speakerDevice", GetSelectedAudioDeviceName(SpeakersInputComboBox) ?? "");
+    {
+        Settings.Set("speakerDevice", SelectedSpeakersDeviceName ?? "");
         if (SttManager.Enabled)
             SttManager.UpdateSpeakersRecognizer();
     }

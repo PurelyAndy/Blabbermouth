@@ -63,8 +63,8 @@ public static class SttManager
         _micRecognizer?.Stop();
         if (!ListenToMic || !Enabled) return;
 
-        string? deviceId = MainWindow.I.AudioConfig.SelectedMicDeviceId;
-        if (string.IsNullOrWhiteSpace(deviceId)) return;
+        string? deviceName = MainWindow.I.AudioConfig.SelectedMicDeviceName;
+        if (string.IsNullOrWhiteSpace(deviceName)) return;
 
         if (_micRecognizer == null)
         {
@@ -80,7 +80,7 @@ public static class SttManager
                 };
             }
         }
-        _micRecognizer?.Start(deviceId, isLoopback: false);
+        _micRecognizer?.Start(deviceName, isLoopback: false);
     }
 
     public static void UpdateSpeakersRecognizer()
@@ -88,8 +88,8 @@ public static class SttManager
         _speakersRecognizer?.Stop();
         if (!ListenToSpeakers || !Enabled || !OperatingSystem.IsWindows()) return;
 
-        string? deviceId = MainWindow.I.AudioConfig.SelectedSpeakersDeviceId;
-        if (string.IsNullOrWhiteSpace(deviceId)) return;
+        string? deviceName = MainWindow.I.AudioConfig.SelectedSpeakersDeviceName;
+        if (string.IsNullOrWhiteSpace(deviceName)) return;
 
         if (_speakersRecognizer == null)
         {
@@ -106,7 +106,7 @@ public static class SttManager
             }
         }
 
-        _speakersRecognizer?.Start(deviceId, isLoopback: true);
+        _speakersRecognizer?.Start(deviceName, isLoopback: true);
     }
 
     private static readonly Dictionary<PhraseEntry, int> SeenPhrasesMic = new();
