@@ -68,6 +68,11 @@ public static class PiShock
             return "One of the enabled serial shockers has an invalid shocker ID. Please fix it in the shocker configuration menu.";
         }
 
+        if (!shocker.IsEnabled)
+        {
+            return null;
+        }
+
         string? port = Settings.Get<string>("serialPort");
         if (string.IsNullOrWhiteSpace(port) || port.StartsWith("No serial ports"))
         {

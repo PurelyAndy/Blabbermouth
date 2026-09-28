@@ -7,8 +7,8 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <TrimmerSingleWarn>false</TrimmerSingleWarn>
         <DebugType>embedded</DebugType>
-        <AssemblyVersion>1.3.0.0</AssemblyVersion>
-        <InformationalVersion>1.3.0</InformationalVersion>
+        <AssemblyVersion>1.3.1.0</AssemblyVersion>
+        <InformationalVersion>1.3.1</InformationalVersion>
         <Copyright>Copyright © PurelyAndy 2026</Copyright>
     </PropertyGroup>
 
